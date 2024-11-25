@@ -6,12 +6,7 @@ knitr::opts_chunk$set(fig.width=7, fig.height=5)
 # install.packages("MultiTraits")
 
 ## ----class.source = 'fold-show'-----------------------------------------------
-# Install devtools if not already installed
-# if (!requireNamespace("devtools", quietly = TRUE)) {
-#   install.packages("devtools")
-# }
-
-# Install MultiTraits from GitHub
+# if (!requireNamespace("devtools", quietly = TRUE)) {install.packages("devtools")}
 # devtools::install_github("biodiversity-monitoring/MultiTraits")
 
 ## ----class.source = 'fold-show'-----------------------------------------------

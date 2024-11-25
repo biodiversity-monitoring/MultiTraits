@@ -13,12 +13,7 @@ The MultiTraits package is a powerful tool for analyzing and visualizing multidi
 ### From GitHub (development version)
 
 ```{r,class.source = 'fold-show'}
-# Install devtools if not already installed
-# if (!requireNamespace("devtools", quietly = TRUE)) {
-#   install.packages("devtools")
-# }
-
-# Install MultiTraits from GitHub
+# if (!requireNamespace("devtools", quietly = TRUE)) {install.packages("devtools")}
 # devtools::install_github("biodiversity-monitoring/MultiTraits")
 ```
 

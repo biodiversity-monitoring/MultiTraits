@@ -26,5 +26,5 @@ RoxygenNote: 7.3.2
 Config/testthat/edition: 3
 VignetteBuilder: knitr
 NeedsCompilation: no
-Packaged: 2024-11-25 15:40:24 UTC; Administrator
+Packaged: 2024-11-25 15:49:56 UTC; Administrator
 Author: Yan He [aut, cre]
