@@ -1,0 +1,24 @@
+Package: MDTs
+Type: Package
+Title: An R package for analyzing and visualizing multidimensional
+        traits in plants
+Version: 0.1.0
+Date: 2024-11-25
+Authors@R: c(
+    person("Yan", "He", email = "heyan@njfu.edu.cn", role = c("aut", "cre")))
+Maintainer: Yan He <heyan@njfu.edu.cn>
+Description: 
+    A comprehensive R package for analyzing and visualizing multidimensional plant traits. It implements multiple analytical methods including CSR (C-S-R) strategy analysis using leaf area (LA), leaf dry matter content (LDMC), and specific leaf area (SLA), Leaf-Height-Seed (LHS) strategy analysis, Niche Periodicity Table (NPT) analysis, and Trait Network (TN) analysis. The package provides functions for data analysis, visualization, and network metrics calculation, offering tools for exploring plant ecological strategies and trait relationships.
+Imports: ggtern, igraph, Hmisc, corrplot, scatterplot3d, vegan, ggrepel
+Depends: R (>= 4.0.0), ggplot2
+Suggests: knitr, rmarkdown, testthat (>= 3.0.0), devtools
+License: GPL-3
+Encoding: UTF-8
+LazyData: true
+Roxygen: list(markdown = TRUE)
+RoxygenNote: 7.3.2
+Config/testthat/edition: 3
+VignetteBuilder: knitr
+NeedsCompilation: no
+Packaged: 2024-11-25 13:06:13 UTC; Administrator
+Author: Yan He [aut, cre]
