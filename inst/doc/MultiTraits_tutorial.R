@@ -3,7 +3,7 @@ knitr::opts_chunk$set(fig.width=7, fig.height=5)
 ## Introduction
 
 ## ----class.source = 'fold-show'-----------------------------------------------
-# install.packages("MDTs")
+# install.packages("MultiTraits")
 
 ## ----class.source = 'fold-show'-----------------------------------------------
 # Install devtools if not already installed
@@ -11,11 +11,11 @@ knitr::opts_chunk$set(fig.width=7, fig.height=5)
 #   install.packages("devtools")
 # }
 
-# Install MDTs from GitHub
-# devtools::install_github("biodiversity-monitoring/MDTs")
+# Install MultiTraits from GitHub
+# devtools::install_github("biodiversity-monitoring/MultiTraits")
 
 ## ----class.source = 'fold-show'-----------------------------------------------
-library(MDTs)
+library(MultiTraits)
 data(PFF)
 data(WH)
 

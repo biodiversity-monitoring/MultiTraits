@@ -1,13 +1,13 @@
-# MDTs<img src="man/figures/LOGO.png" align="right" alt="MDTs logo" width="120" />
+# MultiTraits<img src="man/figures/LOGO.png" align="right" alt="MultiTraits logo" width="120" />
 
-The MDTs package is a powerful tool for analyzing and visualizing multidimensional traits in plants. It provides a comprehensive set of functions for various trait-based ecological analyses, including CSR strategy analysis, LHS strategy analysis, niche periodicity table analysis, and trait network analysis. This vignette will guide you through the installation process and demonstrate the main functions of the package using example datasets.
+The MultiTraits package is a powerful tool for analyzing and visualizing multidimensional traits in plants. It provides a comprehensive set of functions for various trait-based ecological analyses, including CSR strategy analysis, LHS strategy analysis, niche periodicity table analysis, and trait network analysis. This vignette will guide you through the installation process and demonstrate the main functions of the package using example datasets.
 
 ## Installation
 
 ### From CRAN (recommended)
 
 ```{r,class.source = 'fold-show'}
-# install.packages("MDTs")
+# install.packages("MultiTraits")
 ```
 
 ### From GitHub (development version)
@@ -18,8 +18,8 @@ The MDTs package is a powerful tool for analyzing and visualizing multidimension
 #   install.packages("devtools")
 # }
 
-# Install MDTs from GitHub
-# devtools::install_github("biodiversity-monitoring/MDTs")
+# Install MultiTraits from GitHub
+# devtools::install_github("biodiversity-monitoring/MultiTraits")
 ```
 
 ## Main Functions
@@ -48,10 +48,10 @@ The MDTs package is a powerful tool for analyzing and visualizing multidimension
 
 ### Example Datasets
 
-The MDTs package includes two example datasets: PFF and WH. Let's load the package and examine these datasets:
+The MultiTraits package includes two example datasets: PFF and WH. Let's load the package and examine these datasets:
 
 ```{r,class.source = 'fold-show'}
-library(MDTs)
+library(MultiTraits)
 data(PFF)
 data(WH)
 
