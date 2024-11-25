@@ -1,4 +1,4 @@
-# MultiTraits<img src="man/figures/LOGO.png" align="right" alt="MultiTraits logo" width="120" />
+# MultiTraits<img src="man/figures/LOGO.jpg" align="right" alt="MultiTraits logo" width="120" />
 
 The MultiTraits package is a powerful tool for analyzing and visualizing multidimensional traits in plants. It provides a comprehensive set of functions for various trait-based ecological analyses, including CSR strategy analysis, LHS strategy analysis, niche periodicity table analysis, and trait network analysis. This vignette will guide you through the installation process and demonstrate the main functions of the package using example datasets.
 
