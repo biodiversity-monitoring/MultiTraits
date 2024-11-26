@@ -114,6 +114,7 @@ The trait network analysis function helps you explore the relationships between 
 ```{r,class.source = 'fold-show'}
 data(WH)
 WH <- WH[,4:23]
+TN_corr(traits_matrix=WH, rThres = 0.2, pThres = 0.05)
 Tn_result <- TN(traits_matrix = WH, rThres = 0.2, pThres = 0.05)
 TN_metrics(Tn_result)
 TN_plot(Tn_result, style = 1)
