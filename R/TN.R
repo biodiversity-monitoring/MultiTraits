@@ -183,6 +183,12 @@ TN_metrics <- function(graph) {
 #' @param graph An igraph object representing the trait network.
 #' @param style A numeric value that determines the plotting style (default is 1).
 #'
+#' @return
+#' An object of class `igraph`. This function generates a visualization of the trait network graph.
+#' When style = 1, it displays a community structure plot.
+#' When style = 2, it displays a circular layout plot where vertex colors represent community membership,
+#' edge thickness represents correlation strength, and edge color represents the sign of the correlation (black for positive, red for negative).
+#'
 #' @details
 #' The function uses the `cluster_fast_greedy` algorithm to identify communities
 #' in the graph and assigns community membership to vertices. It offers two
