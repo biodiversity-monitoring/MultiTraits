@@ -38,8 +38,8 @@ The MultiTraits package is a powerful tool for analyzing and visualizing multidi
 | **TN**                |                                                                              |
 | TN_corr()             | Calculate and Visualize Plant Trait Correlation Network                      |
 | TN()                  | Generate Plant Trait Network                                                 |
-| TN_plot()             | Calculate Node and Global Metrics for Trait Networks                         |
-| TN_metrics()          | Plot Trait Network Graph                                                     |
+| TN_metrics()          | Calculate Node and Global Metrics for Trait Networks                         |
+| TN_plot()             | Plot Trait Network Graph                                                     |
 
 ### Example Datasets
 
