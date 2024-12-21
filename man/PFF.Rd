@@ -9,15 +9,15 @@ A data frame with 137 rows and 20 variables:
 \describe{
 \item{family}{Plant family}
 \item{species}{Plant species}
-\item{Height}{Plant height (cm)}
+\item{Height}{Canopy height (cm)}
 \item{Leaf_area}{Leaf area (mm^2)}
 \item{LDMC}{Leaf dry matter content (\%)}
 \item{SLA}{Specific leaf area (mm^2/mg)}
 \item{SRL}{Specific root length (m/g)}
 \item{SeedMass}{Seed mass (mg)}
-\item{FltDate}{Flowering date (Julian day)}
-\item{FltDur}{Flowering duration (days)}
-\item{k_value}{k-value (not specified)}
+\item{FltDate}{mean Flowering date (Julian day)}
+\item{FltDur}{mean Flowering duration (days)}
+\item{k_value}{decomposition decay constant, where proportion of original mass remaining = exp(- k-value*0.926)}
 \item{Leaf_Cmass}{Leaf carbon content (\% dry mass)}
 \item{Leaf_Nmass}{Leaf nitrogen content (\% dry mass)}
 \item{Leaf_CN}{Leaf carbon to nitrogen ratio}

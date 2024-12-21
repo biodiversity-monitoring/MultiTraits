@@ -4,7 +4,7 @@
 \alias{TN_corr}
 \title{Calculate and Visualize Plant Trait Correlation Network}
 \usage{
-TN_corr(traits_matrix, rThres = 0.2, pThres = 0.05)
+TN_corr(traits_matrix, rThres = 0.2, pThres = 0.05, method = "pearson")
 }
 \arguments{
 \item{traits_matrix}{A numeric matrix where each column represents a plant trait and each row represents a sample.}
@@ -12,6 +12,8 @@ TN_corr(traits_matrix, rThres = 0.2, pThres = 0.05)
 \item{rThres}{Numeric, threshold for correlation coefficient, default is 0.2. Only correlations with absolute values above this threshold will be displayed in the plot.}
 
 \item{pThres}{Numeric, threshold for p-value, default is 0.05. Only correlations with p-values below this threshold will be displayed in the plot.}
+
+\item{method}{Character, specifies the correlation method to use: "pearson" (default) or "spearman".}
 }
 \value{
 Returns a correlation network plot object.
@@ -24,10 +26,13 @@ The function first calculates Pearson correlation coefficients between traits, t
 Finally, it plots the correlation network using the corrplot package. The plot displays only correlations that meet both the correlation coefficient and p-value thresholds.
 }
 \examples{
-data(WH)
-WH <- WH[,4:23]
-head(WH)
-TN_corr(traits_matrix = WH, rThres = 0.3, pThres = 0.01)
+data(PFF)
+PFF_traits <- PFF[, c("Height", "Leaf_area","LDMC","SLA","SRL","SeedMass","FltDate",
+                      "FltDur","Leaf_Cmass","Leaf_Nmass","Leaf_CN","Leaf_Pmass",
+                      "Leaf_NP","Leaf_CP","Root_Cmass","Root_Nmass","Root_CN")]
+PFF_traits <- na.omit(PFF_traits)
+head(PFF_traits)
+TN_corr(traits_matrix = PFF_traits, rThres = 0.3, pThres = 0.01,method = "pearson")
 
 }
 \references{

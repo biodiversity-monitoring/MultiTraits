@@ -3,7 +3,6 @@ library(vegan)
 library(ggplot2)
 library(ggrepel)
 
-utils::globalVariables(c("PC1", "PC2", "species"))
 
 #' Perform nested principal component analysis (PCA of PCAs) for ecological niche periodicity
 #'
@@ -164,25 +163,44 @@ NPT_plot <- function(pca_obj, group = NULL) {
   var_explained <- pca_obj$CA$eig / sum(pca_obj$CA$eig) * 100
 
   # Create the plot
-  ggplot2::ggplot() +
+  p <- ggplot2::ggplot() +
     ggplot2::geom_point(data = site_scores,
-                        ggplot2::aes(x = PC1, y = PC2, fill = group),
+                        ggplot2::aes(x = .data$PC1, y = .data$PC2, fill = group),
                         shape = 21, size = 2, alpha = 0.5) +
     ggplot2::geom_segment(data = species_scores,
-                          ggplot2::aes(x = 0, y = 0, xend = PC1, yend = PC2),
+                          ggplot2::aes(x = 0, y = 0, xend = .data$PC1, yend = .data$PC2),
                           arrow = ggplot2::arrow(length = ggplot2::unit(0.2, "cm")),
                           color = "black") +
     ggrepel::geom_text_repel(data = species_scores,
-                             ggplot2::aes(x = PC1, y = PC2, label = species),
+                             ggplot2::aes(x = .data$PC1, y = .data$PC2, label = .data$species),
                              color = "black", size = 4, max.overlaps = Inf) +
     ggplot2::geom_vline(xintercept = 0, linetype = "dashed", color = "black") +
     ggplot2::geom_hline(yintercept = 0, linetype = "dashed", color = "black") +
-    ggplot2::theme(panel.border = ggplot2::element_rect(color = "black", fill = NA, linewidth = 1),
-                   panel.background = ggplot2::element_blank(),
-                   panel.grid.major = ggplot2::element_blank(),
-                   panel.grid.minor = ggplot2::element_blank()) +
-    ggplot2::labs(x = paste0("PC1 (", round(var_explained[1], 1), "%)"),
-                  y = paste0("PC2 (", round(var_explained[2], 1), "%)"))
+    ggplot2::theme_bw() +
+    ggplot2::theme(
+      panel.border = ggplot2::element_rect(color = "black", fill = NA, linewidth = 1),
+      panel.grid.major = ggplot2::element_blank(),
+      panel.grid.minor = ggplot2::element_blank(),
+      legend.background = ggplot2::element_rect(fill = "white", color = "black", linewidth = 0.5),
+      legend.title = ggplot2::element_text(face = "bold", size = 9),
+      legend.text = ggplot2::element_text(size = 8),
+      legend.key = ggplot2::element_rect(fill = "white", color = NA),
+      legend.key.size = unit(0.8, "lines"),
+      legend.position = "right",
+      axis.title = ggplot2::element_text(size = 12, face = "bold"),
+      axis.text = ggplot2::element_text(size = 10, color = "black")
+    ) +
+    ggplot2::labs(
+      x = paste0("PC1 (", round(var_explained[1], 1), "%)"),
+      y = paste0("PC2 (", round(var_explained[2], 1), "%)"),
+      fill = "Group"
+    )
+
+  if (is.null(group)) {
+    p <- p + ggplot2::theme(legend.position = "none")
+  }
+
+  return(p)
 }
 
 

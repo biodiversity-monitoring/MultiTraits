@@ -18,9 +18,13 @@ A list containing two data frames:
 This function computes various node and global metrics for a trait network graph.
 }
 \examples{
-data(WH)
-WH <- WH[,4:23]
-Tn_result <- TN(traits_matrix = WH, rThres = 0.2, pThres = 0.05)
+data(PFF)
+PFF_traits <- PFF[, c("Height", "Leaf_area","LDMC","SLA","SRL","SeedMass","FltDate",
+                      "FltDur","Leaf_Cmass","Leaf_Nmass","Leaf_CN","Leaf_Pmass",
+                      "Leaf_NP","Leaf_CP","Root_Cmass","Root_Nmass","Root_CN")]
+PFF_traits <- na.omit(PFF_traits)
+head(PFF_traits)
+Tn_result <- TN(traits_matrix = PFF_traits, rThres = 0.2, pThres = 0.05)
 TN_metrics(Tn_result)
 
 }

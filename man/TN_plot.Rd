@@ -4,12 +4,16 @@
 \alias{TN_plot}
 \title{Plot Trait Network Graph}
 \usage{
-TN_plot(graph, style = 1)
+TN_plot(graph, style = 1, vertex.size = 20, vertex.label.cex = 0.6)
 }
 \arguments{
 \item{graph}{An igraph object representing the trait network.}
 
 \item{style}{A numeric value that determines the plotting style (default is 1).}
+
+\item{vertex.size}{Numeric value for the size of vertices in the plot (default is 20).}
+
+\item{vertex.label.cex}{Numeric value for the scaling factor of vertex labels (default is 0.6).}
 }
 \value{
 An object of class \code{igraph}. This function generates a visualization of the trait network graph.
@@ -27,14 +31,19 @@ plotting styles:
 \itemize{
 \item Style 1: Plots the community structure.
 \item Style 2: Plots the graph in a circular layout with vertex colors representing communities.
+The vertex size and label size can be customized using vertex.size and vertex.label.cex parameters respectively.
 }
 }
 \examples{
-data(WH)
-WH <- WH[,4:23]
-Tn_result <- TN(traits_matrix = WH, rThres = 0.2, pThres = 0.05)
-TN_plot(Tn_result, style = 1)
-TN_plot(Tn_result, style = 2)
+data(PFF)
+PFF_traits <- PFF[, c("Height", "Leaf_area","LDMC","SLA","SRL","SeedMass","FltDate",
+                      "FltDur","Leaf_Cmass","Leaf_Nmass","Leaf_CN","Leaf_Pmass",
+                      "Leaf_NP","Leaf_CP","Root_Cmass","Root_Nmass","Root_CN")]
+PFF_traits <- na.omit(PFF_traits)
+head(PFF_traits)
+Tn_result <- TN(traits_matrix = PFF_traits, rThres = 0.2, pThres = 0.05)
+TN_plot(Tn_result, style = 1, vertex.size = 20, vertex.label.cex = 0.6)
+TN_plot(Tn_result, style = 2, vertex.size = 20, vertex.label.cex = 0.6)
 
 }
 \references{

@@ -89,41 +89,49 @@ LHS_plot <- function(data,
                      colors = c("#30123BFF", "#4777EFFF", "#1BD0D5FF", "#62FC6BFF",
                                 "#D2E935FF", "#FE9B2DFF", "#DB3A07FF", "#7A0403FF"),
                      log_transform = TRUE) {
-
-  # Check if required columns exist
+  # Check required columns
   required_cols <- c("SLA", "Height", "SeedMass", "LHS_strategy")
   if (!all(required_cols %in% names(data))) {
     missing_cols <- setdiff(required_cols, names(data))
     stop(paste("Data is missing the following columns:", paste(missing_cols, collapse = ", ")))
   }
-
-  # Convert LHS_strategy to a factor
+  # Convert LHS_strategy to factors
   data$LHS_strategy <- as.factor(data$LHS_strategy)
-
-  # Determine whether to apply log transformation
+  # Determine if logarithmic conversion is performed
   transform_func <- if (log_transform) log else identity
-
-  # Create a 3D scatterplot with only xyz edges
+  # Prepare shaft labels
+  x_label <- if(log_transform) expression(log~"(SLA)") else "SLA"
+  y_label <- if(log_transform) expression(log~"(Height)") else "Height"
+  z_label <- if(log_transform) expression(log~"(Seed mass)") else "Seed mass"
+  # Create 3D scatterplots
   s3d <- scatterplot3d::scatterplot3d(transform_func(data$SLA),
                                       transform_func(data$Height),
                                       transform_func(data$SeedMass),
                                       color = colors[as.numeric(data$LHS_strategy)],
-                                      xlab = if(log_transform) "log(SLA)" else "SLA",
-                                      ylab = if(log_transform) "log(Height)" else "Height",
-                                      zlab = if(log_transform) "log(Seed mass)" else "Seed mass",
+                                      bg = colors[as.numeric(data$LHS_strategy)],
+                                      xlab = x_label,
+                                      ylab = y_label,
+                                      zlab = z_label,
                                       type = "h",
-                                      pch = 16,
+                                      pch = 21,
                                       axis = TRUE,
                                       box = FALSE,
-                                      grid = FALSE,
+                                      grid = TRUE,
                                       angle = 60)
-
-  # Add Legend
+  # Add legend
   graphics::legend("topright",
                    legend = levels(data$LHS_strategy),
+                   title = expression(bold("Types")),
+                   cex = 0.8,
                    col = "black",
                    pt.bg = colors,
-                   pch = 21)
+                   pch = 21,
+                   box.lty = 1,
+                   title.adj = 0.3,
+                   y.intersp = 1.05,
+                   x.intersp = 1,
+                   yjust = 1,
+                   bg = "white")
 }
 
 

@@ -1,5 +1,7 @@
 ---
 title: "MultiTraits_tutorial"
+author: "He Yan"
+date: "2024.12.21"
 output: rmarkdown::html_vignette
 vignette: >
   %\VignetteIndexEntry{MultiTraits_tutorial}
@@ -9,10 +11,11 @@ vignette: >
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(fig.width=7, fig.height=5)
-## Introduction
 ```
 
-The MultiTraits package is a powerful tool for analyzing and visualizing multidimensional traits in plants. It provides a comprehensive set of functions for various trait-based ecological analyses, including CSR strategy analysis, LHS strategy analysis, niche periodicity table analysis, and trait network analysis. This vignette will guide you through the installation process and demonstrate the main functions of the package using example datasets.
+## Introduction
+
+Plant functional traits and their multidimensional trade-offs represent fundamental aspects of plant ecological research. The MultiTraits R package integrates four complementary analytical modules: Competitor-Stress tolerator-Ruderal (CSR) strategy analysis, Leaf-Height-Seed (LHS) strategy analysis, Niche Periodicity Table (NPT) analysis, and Trait Network (TN) analysis, providing researchers with a comprehensive analytical platform. This tutorial aims to guide users through the core functionalities and practical applications of the MultiTraits package. Through practical demonstrations, we illustrate how these analytical modules can be utilized to explore multidimensional relationships among plant traits, including key steps in data preparation, analysis workflows, and result visualization.
 
 ## Installation
 
@@ -31,97 +34,171 @@ The MultiTraits package is a powerful tool for analyzing and visualizing multidi
 
 ## Main Functions
 
-| Function              | Description                                                                  |
-|-------------------------------|----------------------------------------|
-| **Data**              |                                                                              |
-| PFF                   | Plant Functional Traits Dataset from Ponderosa Pine Forests Flora            |
-| WH                    | Wetland Herbaceous Plant Traits Dataset                                      |
-| **CSR**               |                                                                              |
-| CSR_strategy()        | Calculate CSR (Competition-Stress-Ruderal) Strategy                          |
-| CSR()                 | Calculate CSR strategy for multiple plant species                            |
-| CSR_plot()            | Create a ternary plot of CSR strategies                                      |
-| **LHS**               |                                                                              |
-| LHS()                 | Calculate LHS (Leaf-Height-Seed) Strategy                                    |
-| LHS_plot()            | Generate a 3D scatterplot of plant traits                                    |
-| LHS_strategy_scheme() | Create a table of Leaf-Height-Seed (LHS) strategy types                      |
-| **NPT**               |                                                                              |
-| NPT()                 | Perform 'PCA of PCAs' for ecological niche periodicity |
-| NPT_plot()            | Plot results from nested principal component analysis                        |
-| **TN**                |                                                                              |
-| TN_corr()             | Calculate and Visualize Plant Trait Correlation Network                      |
-| TN()                  | Generate Plant Trait Network                                                 |
-| TN_plot()             | Calculate Node and Global Metrics for Trait Networks                         |
-| TN_metrics()          | Plot Trait Network Graph                                                     |
+| Module | Function              | Description                                                                                                             |
+|-------------------|-----------------------|------------------------------|
+| CSR    | CSR_strategy()        | Computes C-S-R ecological strategy coordinates for individual plant species based on key functional traits              |
+|        | CSR()                 | Performs batch calculation of C-S-R strategies across multiple plant species simultaneously                             |
+|        | CSR_plot()            | Generates publication-quality ternary plots for visualizing C-S-R strategy distributions                                |
+| LHS    | LHS()                 | Analyzes and classifies plant species into ecological strategy types based on the Leaf-Height-Seed (LHS) trait spectrum |
+|        | LHS_plot()            | Renders three-dimensional visualization of species distribution in LHS strategy space                                   |
+|        | LHS_strategy_scheme() | Generates standardized classification scheme for LHS ecological strategies \^                                           |
+| NPT    | NPT()                 | Implements hierarchical principal component analysis to identify ecological niche periodicity patterns                  |
+|        | NPT_plot()            | Visualizes results of niche periodicity analysis through ordination plots                                               |
+| TN     | TN_corr()             | Analyzes and visualizes correlation structure within plant trait networks                                               |
+|        | TN()                  | Constructs functional trait networks based on specified correlation thresholds                                          |
+|        | TN_metrics()          | Calculates network centrality metrics and topological properties                                                        |
+|        | TN_plot()             | Renders customizable network graphs highlighting trait relationships                                                    |
 
-### Example Datasets
+### Example Datasets: PFF (Pine Forests Flora)
 
-The MultiTraits package includes two example datasets: PFF and WH. Let's load the package and examine these datasets:
+The package includes a built-in example dataset called PFF that can be loaded as follows:
 
 ```{r,class.source = 'fold-show'}
 library(MultiTraits)
 data(PFF)
-data(WH)
-
 # View the structure of the datasets
-str(PFF)
-str(WH)
+head(PFF)
 ```
+
+The PFF dataset contains trait measurements for plant species found in pine forests, with the following variables:
+
+Height: Maximum plant height (cm)
+
+Leaf_area: Leaf area (cm²)
+
+LDMC: Leaf dry matter content (mg/g)
+
+SLA: Specific leaf area (mm²/mg)
+
+SRL: Specific root length
+
+SeedMass: Seed mass
+
+FltDate: Flowering date
+
+FltDur: Flowering duration
+
+k_value: Decomposition rate
+
+Leaf_Cmass: Leaf carbon content
+
+Leaf_Nmass: Leaf nitrogen content
+
+Leaf_CN: Leaf carbon/nitrogen ratio
+
+Leaf_Pmass: Leaf phosphorus content
+
+Leaf_NP: Leaf nitrogen/phosphorus ratio
+
+Leaf_CP: Leaf carbon/phosphorus ratio
+
+Root_Cmass: Root carbon content
+
+Root_Nmass: Root nitrogen content
+
+Root_CN: Root carbon/nitrogen ratio
 
 ### CSR Strategy
 
-The CSR strategy analysis function allows you to analyze plant strategies based on the CSR (Competitive, Stress-tolerant, Ruderal) theory:
+The CSR strategy analysis is based on Pierce et al.'s (2017) global CSR methodology, which uses three key leaf traits: Leaf Area (LA), Leaf Dry Matter Content (LDMC), and Specific Leaf Area (SLA). Using the MultiTraits package, we analyze these traits for 133 plant species from the PFF dataset. The CSR() function calculates the C, S, and R scores for each species, while CSR_plot() creates a ternary plot showing the distribution of species along the three strategy axes. This visualization helps identify whether species tend toward competitive (C), stress-tolerant (S), or ruderal (R) life strategies.
 
 ```{r,class.source = 'fold-show'}
-LA <- c(369615.7, 11.8, 55.7, 36061.2, 22391.8, 30068.1, 31059.5, 29895.1)
-LDMC <- c(25.2, 39.7, 13.3, 35.5, 33.2, 36.1, 35.2, 34.9)
-SLA <- c(17.4, 6.6, 34.1, 14.5, 8.1, 12.1, 9.4, 10.9)
-traits <- data.frame(LA, LDMC, SLA)
+# Load the PFF dataset
+data(PFF)
+head(PFF)
+
+# Select required traits for CSR analysis
+traits <- data.frame(LA=PFF$Leaf_area, LDMC=PFF$LDMC, SLA=PFF$SLA)
+head(traits)
+
+# Perform CSR analysis
 result <- CSR(data = traits)
-CSR_plot(data=result)
+head(result)
+
+# Visualize CSR strategy results
+CSR_plot(data=result, expand_margin = 1)
 ```
 
 ### LHS Strategy
 
-The LHS strategy analysis function helps you analyze plant strategies based on the LHS (Leaf-Height-Seed) theory:
+The LHS (Leaf-Height-Seed) strategy analysis is based on three key plant functional traits: specific leaf area (SLA), plant height, and seed mass. The LHS() function in the MultiTraits package classifies plants into eight ecological strategy types, reflecting trade-offs in resource acquisition, competitive ability, and reproductive strategies. The analysis results can be visualized in three-dimensional space using the LHS_plot() function, while LHS_strategy_scheme() illustrates the ecological significance of the eight strategy types. This analytical approach helps understand how plants adapt to environments through different trait combinations.
 
 ```{r,class.source = 'fold-show'}
+# Load the PFF dataset
 data(PFF)
+# Select specific columns (SLA, Height, SeedMass) from the PFF dataset
 pff <- PFF[, c("SLA", "Height", "SeedMass")]
+head(pff)
+
+# Perform LHS (Leaf-Height-Seed) analysis on the selected data
 result <- LHS(pff)
 head(result)
+table(result$LHS_strategy)
+
+# Create a visualization plot of the LHS analysis results
 LHS_plot(result)
+
+# Display the LHS strategy scheme diagram
 LHS_strategy_scheme()
 ```
 
 ### Niche Periodicity Table
 
-The niche periodicity table analysis function allows you to visualize the distribution of plant traits across different environmental gradients:
+The Niche Periodicity Table (NPT) analysis employs a "PCA of PCAs" approach to explore how plant functional traits are distributed across environmental gradients. While traditionally organized into three fundamental dimensions - growth, survival, and reproduction - these dimensions are not fixed and can be customized according to specific research questions and hypotheses. The NPT function processes these trait dimensions (whether three or more) to create a comprehensive view of plant ecological strategies, while NPT_plot generates visualizations that can be enhanced by adding taxonomic information such as plant family classifications.
 
 ```{r,class.source = 'fold-show'}
+# Load the PFF dataset
 data(PFF)
+# Log-transform columns 3-20 of the dataset
 PFF[,3:20] <- log(PFF[,3:20])
+# Remove rows with missing values (NA)
 PFF <- na.omit(PFF)
+head(PFF)
+
+# Define trait dimensions for NPT analysis
 traits_dimension <-list(
   grow = c("SLA","Leaf_area","LDMC","SRL","Leaf_Nmass","Leaf_Pmass","Root_Nmass"),
   survive = c("Height","Leaf_Cmass","Root_Cmass","Leaf_CN","Leaf_NP","Leaf_CP","Root_CN"),
   reproductive = c("SeedMass","FltDate","FltDur"))
+# Perform NPT analysis using the defined dimensions
 npt_result <- NPT(data = PFF, dimension = traits_dimension)
 npt_result
-dev.new() # A window that is too small will interfere with the drawing. 
-          # Optionally, you can set the drawing window to pop up automatically.
+
+# Create a basic visualization of NPT results
 NPT_plot(npt_result$result)
+# Create a visualization of NPT results colored by plant family
 NPT_plot(npt_result$result, PFF$family)
 ```
 
 ### Trait Network
 
-The trait network analysis function helps you explore the relationships between different plant traits:
+The Trait Network (TN) analysis module enables exploration of complex relationships between multiple plant traits. Using correlation analysis (Pearson or Spearman), it creates a network where traits are nodes and significant correlations form edges. The TN() function analyzes relationships, TN_corr() visualizes correlations, TN_metrics() calculates network properties, and TN_plot() offers two visualization styles. In the example, 17 key plant traits from the PFF dataset are analyzed, with correlations filtered by significance thresholds (rThres=0.2, pThres=0.05) after log transformation and NA removal.
 
 ```{r,class.source = 'fold-show'}
-data(WH)
-WH <- WH[,4:23]
-TN_corr(traits_matrix=WH, rThres = 0.2, pThres = 0.05)
-Tn_result <- TN(traits_matrix = WH, rThres = 0.2, pThres = 0.05)
+# Load the PFF dataset
+data(PFF)
+
+# Select specific trait columns for analysis
+PFF_traits <- PFF[, c("Height", "Leaf_area","LDMC","SLA","SRL","SeedMass","FltDate","FltDur","Leaf_Cmass","Leaf_Nmass",
+                      "Leaf_CN","Leaf_Pmass","Leaf_NP","Leaf_CP","Root_Cmass","Root_Nmass","Root_CN") ]
+# Perform log transformation of data and remove missing values
+PFF_traits <- log(na.omit(PFF_traits))
+head(PFF_traits)
+
+# Calculate trait correlations using specified thresholds
+TN_corr(traits_matrix=PFF_traits, rThres = 0.2, pThres = 0.05,method = "pearson")
+
+# Perform Trait Network (TN) analysis
+Tn_result <- TN(traits_matrix = PFF_traits, rThres = 0.2, pThres = 0.05,method = "pearson")
+Tn_result
+
+# Calculate network metrics for the trait network
 TN_metrics(Tn_result)
-TN_plot(Tn_result, style = 1)
+
+# Create visualization plots of the trait network
+par(mfrow=c(1,2))
+# Style 1
+TN_plot(Tn_result, style = 1,vertex.size = 10,vertex.label.cex = 0.6)
+# Style 2
+TN_plot(Tn_result, style = 2,vertex.size = 20,vertex.label.cex = 0.6)
 ```

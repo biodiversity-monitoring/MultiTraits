@@ -4,10 +4,27 @@
 \alias{CSR_plot}
 \title{Create a ternary plot of CSR strategies}
 \usage{
-CSR_plot(data)
+CSR_plot(
+  data,
+  point_size = 3,
+  point_shape = 21,
+  expand_margin = 1,
+  custom_colors = c("#57C4AD", "#E6E1BC", "#EDA348", "#006165", "#F8E3EF", "#FFFF99",
+    "#376CB1", "#B2589B", "#DC4325", "#F16C4E", "#85B97B", "#FCEB2D", "#04A89E",
+    "#F49320", "#8F88C1", "#33B5D9", "#440153", "#B29BBD", "#28C865")
+)
 }
 \arguments{
-\item{data}{A dataframe containing columns C, S, R, and type for CSR strategy values and plant types.}
+\item{data}{A dataframe containing required columns: C, S, R (numeric values between 0-1)
+and type (categorical classification)}
+
+\item{point_size}{Numeric, diameter of plot points (default = 3)}
+
+\item{point_shape}{Numeric, symbol code for data points (default = 21, circle with border)}
+
+\item{expand_margin}{Numeric, coefficient for plot margin expansion (default = 1)}
+
+\item{custom_colors}{Character vector specifying hex color codes for categorical types}
 }
 \value{
 A ggplot object representing the ternary plot of CSR strategies.
@@ -16,20 +33,23 @@ A ggplot object representing the ternary plot of CSR strategies.
 This function creates a ternary plot of Competition-Stress-Ruderal (CSR) strategies using the ggtern package.
 }
 \details{
-The function uses ggtern to create a ternary plot with the following features:
+This function implements:
 \itemize{
-\item Points colored and filled by plant type
-\item Axis labels for C, S, and R percentages
-\item A white background with RGB colored axes
-\item Legend positioned at the bottom
+\item Configurable point attributes (size, shape)
+\item Adjustable plot boundaries
+\item User-defined color schemes for categories
+\item Automated legend column optimization
+\item Standardized legend positioning
+\item Reference grid and directional indicators
 }
 }
 \examples{
-LA <- c(369615.7, 11.8, 55.7, 36061.2, 22391.8, 30068.1, 31059.5, 29895.1)
-LDMC <- c(25.2, 39.7, 13.3, 35.5, 33.2, 36.1, 35.2, 34.9)
-SLA <- c(17.4, 6.6, 34.1, 14.5, 8.1, 12.1, 9.4, 10.9)
-traits <- data.frame(LA, LDMC, SLA)
+data(PFF)
+head(PFF)
+traits <- data.frame(LA=PFF$Leaf_area, LDMC=PFF$LDMC, SLA=PFF$SLA)
+head(traits)
 result <- CSR(data = traits)
+head(result)
 CSR_plot(data=result)
 
 }

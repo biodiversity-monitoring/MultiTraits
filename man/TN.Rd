@@ -4,7 +4,7 @@
 \alias{TN}
 \title{Generate Plant Trait Network}
 \usage{
-TN(traits_matrix, rThres = 0.2, pThres = 0.05)
+TN(traits_matrix, rThres = 0.2, pThres = 0.05, method = "pearson")
 }
 \arguments{
 \item{traits_matrix}{A numeric matrix where each column represents a plant trait and each row represents a sample.}
@@ -12,6 +12,8 @@ TN(traits_matrix, rThres = 0.2, pThres = 0.05)
 \item{rThres}{Numeric, threshold for correlation coefficient, default is 0.2. Correlations with absolute values below this threshold are set to zero.}
 
 \item{pThres}{Numeric, threshold for p-value, default is 0.05. Only correlations with p-values below this threshold are included in the network.}
+
+\item{method}{Character, specifies the correlation method to use: "pearson" (default) or "spearman".}
 }
 \value{
 Returns an igraph object representing the trait network.
@@ -30,10 +32,13 @@ The function performs the following steps:
 }
 }
 \examples{
-data(WH)
-WH <- WH[,4:23]
-head(WH)
-Tn_result <- TN(traits_matrix = WH, rThres = 0.2, pThres = 0.05)
+data(PFF)
+PFF_traits <- PFF[, c("Height", "Leaf_area","LDMC","SLA","SRL","SeedMass","FltDate",
+                      "FltDur","Leaf_Cmass","Leaf_Nmass","Leaf_CN","Leaf_Pmass",
+                      "Leaf_NP","Leaf_CP","Root_Cmass","Root_Nmass","Root_CN")]
+PFF_traits <- na.omit(PFF_traits)
+head(PFF_traits)
+Tn_result <- TN(traits_matrix = PFF_traits, rThres = 0.2, pThres = 0.05, method = "pearson")
 Tn_result
 
 }

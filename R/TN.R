@@ -10,6 +10,7 @@ library(corrplot)
 #' @param traits_matrix A numeric matrix where each column represents a plant trait and each row represents a sample.
 #' @param rThres Numeric, threshold for correlation coefficient, default is 0.2. Only correlations with absolute values above this threshold will be displayed in the plot.
 #' @param pThres Numeric, threshold for p-value, default is 0.05. Only correlations with p-values below this threshold will be displayed in the plot.
+#' @param method Character, specifies the correlation method to use: "pearson" (default) or "spearman".
 #'
 #' @return Returns a correlation network plot object.
 #'
@@ -26,14 +27,17 @@ library(corrplot)
 #' @importFrom corrplot corrplot
 #'
 #' @examples
-#' data(WH)
-#' WH <- WH[,4:23]
-#' head(WH)
-#' TN_corr(traits_matrix = WH, rThres = 0.3, pThres = 0.01)
+#' data(PFF)
+#' PFF_traits <- PFF[, c("Height", "Leaf_area","LDMC","SLA","SRL","SeedMass","FltDate",
+#'                       "FltDur","Leaf_Cmass","Leaf_Nmass","Leaf_CN","Leaf_Pmass",
+#'                       "Leaf_NP","Leaf_CP","Root_Cmass","Root_Nmass","Root_CN")]
+#' PFF_traits <- na.omit(PFF_traits)
+#' head(PFF_traits)
+#' TN_corr(traits_matrix = PFF_traits, rThres = 0.3, pThres = 0.01,method = "pearson")
 #'
 #' @export
-TN_corr <- function(traits_matrix, rThres = 0.2, pThres = 0.05) {
-  correlation_matrix <- Hmisc::rcorr(as.matrix(traits_matrix), type = "pearson")
+TN_corr <- function(traits_matrix, rThres = 0.2, pThres = 0.05,method = "pearson") {
+  correlation_matrix <- Hmisc::rcorr(as.matrix(traits_matrix), type = method)
   r <- correlation_matrix$r
   p <- correlation_matrix$P
   p <- stats::p.adjust(p, method = 'fdr')
@@ -52,6 +56,7 @@ TN_corr <- function(traits_matrix, rThres = 0.2, pThres = 0.05) {
 #' @param traits_matrix A numeric matrix where each column represents a plant trait and each row represents a sample.
 #' @param rThres Numeric, threshold for correlation coefficient, default is 0.2. Correlations with absolute values below this threshold are set to zero.
 #' @param pThres Numeric, threshold for p-value, default is 0.05. Only correlations with p-values below this threshold are included in the network.
+#' @param method Character, specifies the correlation method to use: "pearson" (default) or "spearman".
 #'
 #' @return Returns an igraph object representing the trait network.
 #'
@@ -72,15 +77,21 @@ TN_corr <- function(traits_matrix, rThres = 0.2, pThres = 0.05) {
 #' @importFrom igraph graph_from_adjacency_matrix simplify delete_vertices degree E
 #'
 #' @examples
-#' data(WH)
-#' WH <- WH[,4:23]
-#' head(WH)
-#' Tn_result <- TN(traits_matrix = WH, rThres = 0.2, pThres = 0.05)
+#' data(PFF)
+#' PFF_traits <- PFF[, c("Height", "Leaf_area","LDMC","SLA","SRL","SeedMass","FltDate",
+#'                       "FltDur","Leaf_Cmass","Leaf_Nmass","Leaf_CN","Leaf_Pmass",
+#'                       "Leaf_NP","Leaf_CP","Root_Cmass","Root_Nmass","Root_CN")]
+#' PFF_traits <- na.omit(PFF_traits)
+#' head(PFF_traits)
+#' Tn_result <- TN(traits_matrix = PFF_traits, rThres = 0.2, pThres = 0.05, method = "pearson")
 #' Tn_result
 #'
 #' @export
-TN <- function(traits_matrix, rThres = 0.2, pThres = 0.05) {
-  correlation_matrix <- Hmisc::rcorr(as.matrix(traits_matrix), type = "pearson")
+TN <- function(traits_matrix, rThres = 0.2, pThres = 0.05, method = "pearson") {
+  # Validate the method parameter
+  method <- match.arg(method, choices = c("pearson", "spearman"))
+  # Calculate the correlation matrix based on the chosen methodology
+  correlation_matrix <- Hmisc::rcorr(as.matrix(traits_matrix), type = method)
 
   # Threshold screening to exclude relationships with Pearson correlation coefficients lower than rThres
   r <- correlation_matrix$r
@@ -129,9 +140,13 @@ TN <- function(traits_matrix, rThres = 0.2, pThres = 0.05) {
 #' 2. Li, Y., Liu, C., Sack, L., Xu, L., Li, M., Zhang, J., & He, N. (2022). Leaf trait network architecture shifts with species‐richness and climate across forests at continental scale. Ecology Letters, 25(6), 1442-1457. https://doi.org/10.1111/ele.14009
 #'
 #' @examples
-#' data(WH)
-#' WH <- WH[,4:23]
-#' Tn_result <- TN(traits_matrix = WH, rThres = 0.2, pThres = 0.05)
+#' data(PFF)
+#' PFF_traits <- PFF[, c("Height", "Leaf_area","LDMC","SLA","SRL","SeedMass","FltDate",
+#'                       "FltDur","Leaf_Cmass","Leaf_Nmass","Leaf_CN","Leaf_Pmass",
+#'                       "Leaf_NP","Leaf_CP","Root_Cmass","Root_Nmass","Root_CN")]
+#' PFF_traits <- na.omit(PFF_traits)
+#' head(PFF_traits)
+#' Tn_result <- TN(traits_matrix = PFF_traits, rThres = 0.2, pThres = 0.05)
 #' TN_metrics(Tn_result)
 #'
 #' @importFrom igraph degree closeness betweenness transitivity edge_density diameter mean_distance cluster_fast_greedy modularity membership
@@ -142,6 +157,8 @@ TN_metrics <- function(graph) {
   closeness <- igraph::closeness(graph)
   betweenness <- igraph::betweenness(graph)
   local_clustering <- igraph::transitivity(graph, type = "local")
+  # Set the clustering coefficient of nodes with degree 0 or 1 to 0
+  local_clustering[is.nan(local_clustering) | degree <= 1] <- 0
 
   # Creating node-level metrics dataframe
   node_metrics <- data.frame(
@@ -182,6 +199,8 @@ TN_metrics <- function(graph) {
 #'
 #' @param graph An igraph object representing the trait network.
 #' @param style A numeric value that determines the plotting style (default is 1).
+#' @param vertex.size Numeric value for the size of vertices in the plot (default is 20).
+#' @param vertex.label.cex Numeric value for the scaling factor of vertex labels (default is 0.6).
 #'
 #' @return
 #' An object of class `igraph`. This function generates a visualization of the trait network graph.
@@ -195,40 +214,45 @@ TN_metrics <- function(graph) {
 #' plotting styles:
 #' - Style 1: Plots the community structure.
 #' - Style 2: Plots the graph in a circular layout with vertex colors representing communities.
+#' The vertex size and label size can be customized using vertex.size and vertex.label.cex parameters respectively.
 #'
 #' @references
 #' 1. He, N., Li, Y., Liu, C., et al. (2020). Plant trait networks: improved resolution of the dimensionality of adaptation. Trends in Ecology & Evolution, 35(10), 908-918. https://doi.org/10.1016/j.tree.2020.06.003
 #' 2. Li, Y., Liu, C., Sack, L., Xu, L., Li, M., Zhang, J., & He, N. (2022). Leaf trait network architecture shifts with species‐richness and climate across forests at continental scale. Ecology Letters, 25(6), 1442-1457. https://doi.org/10.1111/ele.14009
 #'
 #' @examples
-#' data(WH)
-#' WH <- WH[,4:23]
-#' Tn_result <- TN(traits_matrix = WH, rThres = 0.2, pThres = 0.05)
-#' TN_plot(Tn_result, style = 1)
-#' TN_plot(Tn_result, style = 2)
+#' data(PFF)
+#' PFF_traits <- PFF[, c("Height", "Leaf_area","LDMC","SLA","SRL","SeedMass","FltDate",
+#'                       "FltDur","Leaf_Cmass","Leaf_Nmass","Leaf_CN","Leaf_Pmass",
+#'                       "Leaf_NP","Leaf_CP","Root_Cmass","Root_Nmass","Root_CN")]
+#' PFF_traits <- na.omit(PFF_traits)
+#' head(PFF_traits)
+#' Tn_result <- TN(traits_matrix = PFF_traits, rThres = 0.2, pThres = 0.05)
+#' TN_plot(Tn_result, style = 1, vertex.size = 20, vertex.label.cex = 0.6)
+#' TN_plot(Tn_result, style = 2, vertex.size = 20, vertex.label.cex = 0.6)
 #'
 #' @importFrom igraph cluster_fast_greedy membership layout_in_circle V
 #' @export
-TN_plot <- function(graph, style = 1) {
+TN_plot <- function(graph, style = 1,vertex.size = 20,vertex.label.cex = 0.6) {
   comm <- igraph::cluster_fast_greedy(graph)
   igraph::V(graph)$community <- igraph::membership(comm)
   layout <- igraph::layout_in_circle(graph, order = order(igraph::V(graph)$community))
 
   if (style == 1) {
-    plot(comm, graph)
+    plot(comm, graph,vertex.size = vertex.size,vertex.label.cex = vertex.label.cex,vertex.label.color = "black")
   } else if (style == 2) {
     # Get the correlation coefficients of the edges
     edge_correlation <- igraph::E(graph)$correlation
     # Set the line width (according to the absolute value of the correlation coefficient)
     edge_width <- abs(edge_correlation) * 5  # The multiplier can be adjusted to change the line thickness range
-    # Set the color of the edge (red for negative correlation, black for positive correlation)
-    edge_color <- ifelse(edge_correlation > 0, "black", "red")
+    # Set the color of the edge (blue for negative correlation, green for positive correlation)
+    edge_color <- ifelse(edge_correlation > 0, "green", "blue")
     # Drawing
     plot(graph, layout = layout,
          vertex.color = igraph::V(graph)$community,
-         vertex.label.cex = 0.6,
+         vertex.label.cex = vertex.label.cex,
          vertex.label.dist = 0,
-         vertex.size = 20,
+         vertex.size = vertex.size,
          vertex.label.color = "black",
          vertex.label.font = 2,
          edge.width = edge_width,    # Add line width
@@ -237,4 +261,3 @@ TN_plot <- function(graph, style = 1) {
     stop("Invalid style. Please choose 1 or 2.")
   }
 }
-
