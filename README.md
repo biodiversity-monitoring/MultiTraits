@@ -104,7 +104,7 @@ head(result)
 CSR_plot(data=result, expand_margin = 1)
 ```
 
-![](man/figures/1.jpeg)
+![](man/figures/1.jpg)
 
 ### LHS Strategy
 
@@ -129,7 +129,7 @@ LHS_plot(result)
 LHS_strategy_scheme()
 ```
 
-![](man/figures/2.jpeg)
+![](man/figures/2.jpg)
 
 ### Niche Periodicity Table
 
@@ -159,7 +159,7 @@ NPT_plot(npt_result$result)
 NPT_plot(npt_result$result, PFF$family)
 ```
 
-![](man/figures/3.jpeg)
+![](man/figures/3.jpg)
 
 ### Trait Network
 
@@ -194,5 +194,5 @@ TN_plot(Tn_result, style = 1,vertex.size = 10,vertex.label.cex = 0.6)
 TN_plot(Tn_result, style = 2,vertex.size = 20,vertex.label.cex = 0.6)
 ```
 
-![](man/figures/4.jpeg)
-![](man/figures/5.jpeg)
+![](man/figures/4.jpg)
+![](man/figures/5.jpg)
