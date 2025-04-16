@@ -92,35 +92,28 @@ TN <- function(traits_matrix, rThres = 0.2, pThres = 0.05, method = "pearson") {
   method <- match.arg(method, choices = c("pearson", "spearman"))
   # Calculate the correlation matrix based on the chosen methodology
   correlation_matrix <- Hmisc::rcorr(as.matrix(traits_matrix), type = method)
-
   # Threshold screening to exclude relationships with Pearson correlation coefficients lower than rThres
   r <- correlation_matrix$r
   r[abs(r) < rThres] <- 0
-
   # Select correlation coefficients with significance p-values less than pThres
   p <- correlation_matrix$P
   p <- stats::p.adjust(p, method = 'fdr')
   p[p >= pThres] <- -1
   p[p < pThres & p >= 0] <- 1
   p[p == -1] <- 0
-
   # Data retained based on r-values and p-values screened above
   z <- r * p
   diag(z) <- 0
-
   # Transform the adjacency matrix into the adjacency list of an igraph network, and construct a weighted undirected network
   g <- igraph::graph_from_adjacency_matrix(z, weighted = TRUE, mode = 'undirected')
-
   # Remove self-loops
   g <- igraph::simplify(g)
-
   # Delete isolated nodes (nodes with a degree of 0)
   g <- igraph::delete_vertices(g, names(igraph::degree(g)[igraph::degree(g) == 0]))
-
   # Set edge weights to absolute correlation values and store original correlation values
   igraph::E(g)$correlation <- igraph::E(g)$weight
-  igraph::E(g)$weight <- abs(igraph::E(g)$weight)
-
+  # igraph::E(g)$weight <- abs(igraph::E(g)$weight)
+  igraph::E(g)$weight <- 1
   return(g)
 }
 
