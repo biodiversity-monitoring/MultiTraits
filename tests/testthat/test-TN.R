@@ -50,6 +50,10 @@ test_that("Test TN_metrics function", {
 
   metrics <- TN_metrics(g)
 
+  suppressWarnings({
+    metrics <- TN_metrics(g)
+  })
+
   # Check output structure
   expect_type(metrics, "list")
   expect_true(all(c("node", "global") %in% names(metrics)))

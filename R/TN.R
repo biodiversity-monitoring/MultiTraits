@@ -153,10 +153,10 @@ TN <- function(traits_matrix, rThres = 0.2, pThres = 0.05, method = "pearson") {
 #' @export
 TN_metrics <- function(graph) {
   # Node-level metrics
-  degree <- igraph::degree(graph)
-  closeness <- igraph::closeness(graph)
-  betweenness <- igraph::betweenness(graph)
-  local_clustering <- igraph::transitivity(graph, type = "local")
+  degree <- igraph::degree(graph, mode = "all")
+  closeness <- igraph::closeness(graph, mode = "all", weights = NA)
+  betweenness <- igraph::betweenness(graph, directed = FALSE, weights = NA)
+  local_clustering <- igraph::transitivity(graph, type = "local", weights = NULL)
   # Set the clustering coefficient of nodes with degree 0 or 1 to 0
   local_clustering[is.nan(local_clustering) | degree <= 1] <- 0
 
@@ -169,12 +169,12 @@ TN_metrics <- function(graph) {
   )
 
   # Global metrics
-  edge_density <- igraph::edge_density(graph)
-  diameter <- igraph::diameter(graph)
-  avg_path_length <- igraph::mean_distance(graph)
-  avg_clustering <- igraph::transitivity(graph, type = "global")
-  fc <- igraph::cluster_fast_greedy(graph)
-  modularity <- igraph::modularity(graph, igraph::membership(fc))
+  edge_density <- igraph::edge_density(graph, loops = FALSE)
+  diameter <- igraph::diameter(graph, directed = FALSE, weights = NA)
+  avg_path_length <- igraph::mean_distance(graph, directed = FALSE)
+  avg_clustering <- igraph::transitivity(graph, type = "global", weights = NULL)
+  fc <- suppressWarnings(igraph::cluster_edge_betweenness(graph, weights = NULL))
+  modularity <- igraph::modularity(fc)
 
   # Creating global metrics dataframe
   global_metrics <- data.frame(
