@@ -234,7 +234,7 @@ TN_metrics <- function(graph) {
 #' @importFrom igraph cluster_fast_greedy membership layout_in_circle V
 #' @export
 TN_plot <- function(graph, style = 1,vertex.size = 20,vertex.label.cex = 0.6) {
-  comm <- igraph::cluster_fast_greedy(graph)
+  comm <- suppressWarnings(igraph::cluster_edge_betweenness(graph, weights = NULL))
   igraph::V(graph)$community <- igraph::membership(comm)
   layout <- igraph::layout_in_circle(graph, order = order(igraph::V(graph)$community))
 

@@ -1,7 +1,7 @@
 Package: MultiTraits
 Type: Package
 Title: Analyzing and Visualizing Multidimensional Plant Traits
-Version: 0.4.0
+Version: 0.5.0
 Date: 2025-4-16
 Authors@R: c(person("Yan", "He", email = "heyan@njfu.edu.cn", role = c("aut", "cre")),person("Zhaogang", "Liu", role = "aut"),person("Jiangshan", "Lai", role = "aut"),person("Lingfeng", "Mao", role = "aut"))
 Maintainer: Yan He <heyan@njfu.edu.cn>
@@ -17,7 +17,7 @@ RoxygenNote: 7.3.2
 Config/testthat/edition: 3
 VignetteBuilder: knitr
 NeedsCompilation: no
-Packaged: 2025-04-16 02:04:43 UTC; Administrator
+Packaged: 2025-04-16 07:23:04 UTC; Administrator
 Author: Yan He [aut, cre],
   Zhaogang Liu [aut],
   Jiangshan Lai [aut],

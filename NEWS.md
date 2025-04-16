@@ -1,3 +1,10 @@
+# MultiTraits 0.5.0 (2025-4-16)
+
+## Bug fixes and minor improvements
+
+* Modify the community detection algorithm of the TN_metrics function to cluster_edge_betweenness
+
+
 
 # MultiTraits 0.4.0 (2025-4-16)
 
