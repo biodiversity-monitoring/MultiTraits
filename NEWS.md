@@ -3,7 +3,7 @@
 ## Bug fixes and minor improvements
 
 * Modify the community detection algorithm of the TN_metrics function to cluster_edge_betweenness
-
+* Modified TN function to support unweighted networks
 
 
 # MultiTraits 0.4.0 (2025-4-16)

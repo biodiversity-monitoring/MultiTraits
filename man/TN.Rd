@@ -26,7 +26,7 @@ The function performs the following steps:
 \enumerate{
 \item Calculates Pearson correlation coefficients and p-values for the trait matrix.
 \item Applies correlation coefficient and p-value thresholds to filter relationships.
-\item Constructs a weighted undirected graph from the filtered correlation matrix.
+\item Constructs an unweighted undirected graph from the filtered correlation matrix.
 \item Removes self-loops and isolated nodes from the graph.
 \item Adds correlation coefficients as edge attributes.
 }

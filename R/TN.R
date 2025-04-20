@@ -64,7 +64,7 @@ TN_corr <- function(traits_matrix, rThres = 0.2, pThres = 0.05,method = "pearson
 #' The function performs the following steps:
 #' 1. Calculates Pearson correlation coefficients and p-values for the trait matrix.
 #' 2. Applies correlation coefficient and p-value thresholds to filter relationships.
-#' 3. Constructs a weighted undirected graph from the filtered correlation matrix.
+#' 3. Constructs an unweighted undirected graph from the filtered correlation matrix.
 #' 4. Removes self-loops and isolated nodes from the graph.
 #' 5. Adds correlation coefficients as edge attributes.
 #'
@@ -104,7 +104,6 @@ TN <- function(traits_matrix, rThres = 0.2, pThres = 0.05, method = "pearson") {
   # Data retained based on r-values and p-values screened above
   z <- r * p
   diag(z) <- 0
-  # Transform the adjacency matrix into the adjacency list of an igraph network, and construct a weighted undirected network
   g <- igraph::graph_from_adjacency_matrix(z, weighted = TRUE, mode = 'undirected')
   # Remove self-loops
   g <- igraph::simplify(g)
@@ -112,9 +111,13 @@ TN <- function(traits_matrix, rThres = 0.2, pThres = 0.05, method = "pearson") {
   g <- igraph::delete_vertices(g, names(igraph::degree(g)[igraph::degree(g) == 0]))
   # Set edge weights to absolute correlation values and store original correlation values
   igraph::E(g)$correlation <- igraph::E(g)$weight
-  # igraph::E(g)$weight <- abs(igraph::E(g)$weight)
-  igraph::E(g)$weight <- 1
-  return(g)
+  igraph::E(g)$weight <- abs(igraph::E(g)$weight)
+  gdf <- igraph::as_data_frame(g, what = "edges")
+  gdf <- gdf[,c("from","to","correlation")]
+  nodes_name <- unique(c(gdf$from, gdf$to))
+  nodes <- data.frame(id = nodes_name, num = 1)
+  gg <- igraph::graph_from_data_frame(gdf, vertices = nodes, directed=F)
+  return(gg)
 }
 
 
@@ -149,10 +152,9 @@ TN_metrics <- function(graph) {
   degree <- igraph::degree(graph, mode = "all")
   closeness <- igraph::closeness(graph, mode = "all", weights = NA)
   betweenness <- igraph::betweenness(graph, directed = FALSE, weights = NA)
-  local_clustering <- igraph::transitivity(graph, type = "local", weights = NULL)
+  local_clustering <- igraph::transitivity(graph, type = "local", weights = NA)
   # Set the clustering coefficient of nodes with degree 0 or 1 to 0
   local_clustering[is.nan(local_clustering) | degree <= 1] <- 0
-
   # Creating node-level metrics dataframe
   node_metrics <- data.frame(
     degree = degree,
@@ -160,15 +162,13 @@ TN_metrics <- function(graph) {
     betweenness = betweenness,
     clustering_coefficient = local_clustering
   )
-
   # Global metrics
   edge_density <- igraph::edge_density(graph, loops = FALSE)
   diameter <- igraph::diameter(graph, directed = FALSE, weights = NA)
   avg_path_length <- igraph::mean_distance(graph, directed = FALSE)
-  avg_clustering <- igraph::transitivity(graph, type = "global", weights = NULL)
-  fc <- suppressWarnings(igraph::cluster_edge_betweenness(graph, weights = NULL))
+  avg_clustering <- igraph::transitivity(graph, type = "global", weights = NA)
+  fc <- suppressWarnings(igraph::cluster_edge_betweenness(graph, weights = NA))
   modularity <- igraph::modularity(fc)
-
   # Creating global metrics dataframe
   global_metrics <- data.frame(
     edge_density = edge_density,
@@ -177,7 +177,6 @@ TN_metrics <- function(graph) {
     avg_clustering_coefficient = avg_clustering,
     modularity = modularity
   )
-
   # Return a list containing both node and global metrics
   return(list(
     node = node_metrics,
@@ -202,7 +201,7 @@ TN_metrics <- function(graph) {
 #' edge thickness represents correlation strength, and edge color represents the sign of the correlation (black for positive, red for negative).
 #'
 #' @details
-#' The function uses the `cluster_fast_greedy` algorithm to identify communities
+#' The function uses the `cluster_edge_betweenness` algorithm to identify communities
 #' in the graph and assigns community membership to vertices. It offers two
 #' plotting styles:
 #' - Style 1: Plots the community structure.
@@ -224,13 +223,12 @@ TN_metrics <- function(graph) {
 #' TN_plot(Tn_result, style = 1, vertex.size = 20, vertex.label.cex = 0.6)
 #' TN_plot(Tn_result, style = 2, vertex.size = 20, vertex.label.cex = 0.6)
 #'
-#' @importFrom igraph cluster_fast_greedy membership layout_in_circle V
+#' @importFrom igraph cluster_edge_betweenness membership layout_in_circle V
 #' @export
 TN_plot <- function(graph, style = 1,vertex.size = 20,vertex.label.cex = 0.6) {
-  comm <- suppressWarnings(igraph::cluster_edge_betweenness(graph, weights = NULL))
+  comm <- suppressWarnings(igraph::cluster_edge_betweenness(graph, weights = NA))
   igraph::V(graph)$community <- igraph::membership(comm)
   layout <- igraph::layout_in_circle(graph, order = order(igraph::V(graph)$community))
-
   if (style == 1) {
     plot(comm, graph,vertex.size = vertex.size,vertex.label.cex = vertex.label.cex,vertex.label.color = "black")
   } else if (style == 2) {
