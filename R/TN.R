@@ -1,98 +1,113 @@
-
-library(igraph)
-library(Hmisc)
-library(corrplot)
-
-#' Calculate and Visualize Plant Trait Correlation Network
-#'
-#' This function calculates correlation coefficients for given plant traits and generates a correlation network plot.
-#'
-#' @param traits_matrix A numeric matrix where each column represents a plant trait and each row represents a sample.
-#' @param rThres Numeric, threshold for correlation coefficient, default is 0.2. Only correlations with absolute values above this threshold will be displayed in the plot.
-#' @param pThres Numeric, threshold for p-value, default is 0.05. Only correlations with p-values below this threshold will be displayed in the plot.
-#' @param method Character, specifies the correlation method to use: "pearson" (default) or "spearman".
-#'
-#' @return Returns a correlation network plot object.
-#'
-#' @details
-#' The function first calculates Pearson correlation coefficients between traits, then adjusts p-values using the FDR method.
-#' Finally, it plots the correlation network using the corrplot package. The plot displays only correlations that meet both the correlation coefficient and p-value thresholds.
-#'
-#' @references
-#' 1. He, N., Li, Y., Liu, C., et al. (2020). Plant trait networks: improved resolution of the dimensionality of adaptation. Trends in Ecology & Evolution, 35(10), 908-918. https://doi.org/10.1016/j.tree.2020.06.003
-#' 2. Li, Y., Liu, C., Sack, L., Xu, L., Li, M., Zhang, J., & He, N. (2022). Leaf trait network architecture shifts with species‐richness and climate across forests at continental scale. Ecology Letters, 25(6), 1442-1457. https://doi.org/10.1111/ele.14009
-#'
-#' @importFrom Hmisc rcorr
-#' @importFrom stats p.adjust
-#' @importFrom corrplot corrplot
-#'
-#' @examples
-#' data(PFF)
-#' PFF_traits <- PFF[, c("Height", "Leaf_area","LDMC","SLA","SRL","SeedMass","FltDate",
-#'                       "FltDur","Leaf_Cmass","Leaf_Nmass","Leaf_CN","Leaf_Pmass",
-#'                       "Leaf_NP","Leaf_CP","Root_Cmass","Root_Nmass","Root_CN")]
-#' PFF_traits <- na.omit(PFF_traits)
-#' head(PFF_traits)
-#' TN_corr(traits_matrix = PFF_traits, rThres = 0.3, pThres = 0.01,method = "pearson")
-#'
-#' @export
-TN_corr <- function(traits_matrix, rThres = 0.2, pThres = 0.05,method = "pearson") {
-  correlation_matrix <- Hmisc::rcorr(as.matrix(traits_matrix), type = method)
-  r <- correlation_matrix$r
-  p <- correlation_matrix$P
-  p <- stats::p.adjust(p, method = 'fdr')
-  p1 <- corrplot::corrplot(r, type = "lower", order = "hclust", diag = FALSE,
-                           tl.col = "black", tl.srt = 45, method = "circle",
-                           insig = "pch", pch = 4, pch.col = "red", pch.cex = 1.5,
-                           p.mat = (abs(r) < rThres) | (p >= pThres))
-  return(p1)
-}
-
-
 #' Generate Plant Trait Network
 #'
-#' This function creates a network graph from a plant trait correlation matrix, applying thresholds for correlation strength and significance.
+#' This function creates a network graph from a plant trait correlation matrix, applying thresholds for correlation strength and significance. It supports both standard correlations and phylogenetic independent contrasts.
 #'
-#' @param traits_matrix A numeric matrix where each column represents a plant trait and each row represents a sample.
+#' @param traits_matrix A numeric matrix or data frame where each column represents a plant trait and each row represents a sample/species. Row names should contain species names when using phylogenetic correction.
 #' @param rThres Numeric, threshold for correlation coefficient, default is 0.2. Correlations with absolute values below this threshold are set to zero.
 #' @param pThres Numeric, threshold for p-value, default is 0.05. Only correlations with p-values below this threshold are included in the network.
 #' @param method Character, specifies the correlation method to use: "pearson" (default) or "spearman".
+#' @param phylo_correction Logical, whether to apply phylogenetic correction using phylogenetic independent contrasts, default is FALSE.
+#' @param phylo_tree A phylo object from the ape package containing the phylogenetic tree. Required when phylo_correction = TRUE. Species names in the tree must match row names in traits_matrix.
 #'
-#' @return Returns an igraph object representing the trait network.
+#' @return Returns an igraph object representing the trait network with the following attributes:
+#' \itemize{
+#'   \item Edge attribute 'correlation': original correlation values (positive or negative)
+#'   \item Edge attribute 'weight': absolute correlation values used for network analysis
+#'   \item Vertices represent traits that pass the correlation and significance thresholds
+#' }
 #'
 #' @details
 #' The function performs the following steps:
-#' 1. Calculates Pearson correlation coefficients and p-values for the trait matrix.
-#' 2. Applies correlation coefficient and p-value thresholds to filter relationships.
-#' 3. Constructs an unweighted undirected graph from the filtered correlation matrix.
-#' 4. Removes self-loops and isolated nodes from the graph.
-#' 5. Adds correlation coefficients as edge attributes.
+#' 1. Validates input parameters and phylogenetic tree compatibility (if applicable).
+#' 2. Calculates correlation coefficients and p-values using either standard correlation or phylogenetic independent contrasts.
+#' 3. Applies correlation coefficient and p-value thresholds to filter relationships.
+#' 4. Adjusts p-values using False Discovery Rate (FDR) correction.
+#' 5. Constructs an unweighted undirected graph from the filtered correlation matrix.
+#' 6. Removes self-loops and isolated nodes from the graph.
+#' 7. Adds correlation coefficients as edge attributes.
+#'
+#' When phylo_correction = TRUE, the function:
+#' - Matches species names between traits_matrix and phylo_tree
+#' - Calculates phylogenetic independent contrasts for each trait
+#' - Computes correlations between contrasts to control for phylogenetic relatedness
 #'
 #' @references
-#' 1. He, N., Li, Y., Liu, C., et al. (2020). Plant trait networks: improved resolution of the dimensionality of adaptation. Trends in Ecology & Evolution, 35(10), 908-918. https://doi.org/10.1016/j.tree.2020.06.003
-#' 2. Li, Y., Liu, C., Sack, L., Xu, L., Li, M., Zhang, J., & He, N. (2022). Leaf trait network architecture shifts with species‐richness and climate across forests at continental scale. Ecology Letters, 25(6), 1442-1457. https://doi.org/10.1111/ele.14009
+#' 1. He, N., Li, Y., Liu, C., et al. (2020). Plant trait networks: improved resolution of the dimensionality of adaptation.
+#' Trends in Ecology & Evolution, 35(10), 908-918.
+#' \url{https://doi.org/10.1016/j.tree.2020.06.003}
+#' 2. Li, Y., Liu, C., Sack, L., Xu, L., Li, M., Zhang, J., & He, N. (2022). Leaf trait network architecture shifts with
+#' species‐richness and climate across forests at continental scale. Ecology Letters, 25(6), 1442-1457.
+#' \url{https://doi.org/10.1111/ele.14009}
+#'
 #'
 #' @importFrom Hmisc rcorr
 #' @importFrom stats p.adjust
-#' @importFrom igraph graph_from_adjacency_matrix simplify delete_vertices degree E
+#' @importFrom igraph graph_from_adjacency_matrix simplify delete_vertices degree E graph_from_data_frame as_data_frame
+#' @importFrom ape keep.tip
 #'
 #' @examples
+#' # Example 1: Standard trait network analysis
 #' data(PFF)
+#' rownames(PFF) <- PFF$species
 #' PFF_traits <- PFF[, c("Height", "Leaf_area","LDMC","SLA","SRL","SeedMass","FltDate",
 #'                       "FltDur","Leaf_Cmass","Leaf_Nmass","Leaf_CN","Leaf_Pmass",
 #'                       "Leaf_NP","Leaf_CP","Root_Cmass","Root_Nmass","Root_CN")]
 #' PFF_traits <- na.omit(PFF_traits)
 #' head(PFF_traits)
+#'
 #' Tn_result <- TN(traits_matrix = PFF_traits, rThres = 0.2, pThres = 0.05, method = "pearson")
 #' Tn_result
 #'
+#' # Example 2: Phylogenetically corrected trait network analysis
+#' data(PFF_tree)
+#'
+#' # Trait network with phylogenetic correction
+#' Tn_phylo_result <- TN(traits_matrix = PFF_traits,
+#'                       rThres = 0.2,
+#'                       pThres = 0.05,
+#'                       method = "pearson",
+#'                       phylo_correction = TRUE,
+#'                       phylo_tree = PFF_tree)
+#' Tn_phylo_result
+#'
+#'
 #' @export
-TN <- function(traits_matrix, rThres = 0.2, pThres = 0.05, method = "pearson") {
+TN <- function(traits_matrix, rThres = 0.2, pThres = 0.05, method = "pearson",
+               phylo_correction = FALSE, phylo_tree = NULL) {
   # Validate the method parameter
   method <- match.arg(method, choices = c("pearson", "spearman"))
-  # Calculate the correlation matrix based on the chosen methodology
-  correlation_matrix <- Hmisc::rcorr(as.matrix(traits_matrix), type = method)
-  # Threshold screening to exclude relationships with Pearson correlation coefficients lower than rThres
+  # Input validation for traits_matrix
+  if (!is.data.frame(traits_matrix) && !is.matrix(traits_matrix)) {
+    stop("traits_matrix must be a dataframe or matrix")
+  }
+  # Phylogenetic correction parameter validation
+  if (phylo_correction && is.null(phylo_tree)) {
+    stop("phylo_tree must be provided when phylo_correction = TRUE")
+  }
+  if (phylo_correction) {
+    if (!inherits(phylo_tree, "phylo")) {
+      stop("phylo_tree must be a phylo object from the ape package")
+    }
+    # Check if species names in phylogenetic tree match traits_matrix row names
+    if (!all(rownames(traits_matrix) %in% phylo_tree$tip.label)) {
+      missing_species <- rownames(traits_matrix)[!rownames(traits_matrix) %in% phylo_tree$tip.label]
+      stop(paste("The following species are not present in phylo_tree:",
+                 paste(missing_species, collapse = ", ")))
+    }
+    # Ensure data and phylogenetic tree species order are consistent
+    common_species <- intersect(rownames(traits_matrix), phylo_tree$tip.label)
+    traits_matrix <- traits_matrix[common_species, ]
+    phylo_tree <- ape::keep.tip(phylo_tree, common_species)
+  }
+  # Calculate correlation matrix
+  if (phylo_correction) {
+    # Calculate phylogenetic independent contrasts correlation
+    correlation_matrix <- phylo_correlation(traits_matrix, phylo_tree, method = method)
+  } else {
+    # Standard correlation analysis
+    correlation_matrix <- Hmisc::rcorr(as.matrix(traits_matrix), type = method)
+  }
+  # Threshold screening to exclude relationships with correlation coefficients lower than rThres
   r <- correlation_matrix$r
   r[abs(r) < rThres] <- 0
   # Select correlation coefficients with significance p-values less than pThres
@@ -116,139 +131,6 @@ TN <- function(traits_matrix, rThres = 0.2, pThres = 0.05, method = "pearson") {
   gdf <- gdf[,c("from","to","correlation")]
   nodes_name <- unique(c(gdf$from, gdf$to))
   nodes <- data.frame(id = nodes_name, num = 1)
-  gg <- igraph::graph_from_data_frame(gdf, vertices = nodes, directed=F)
+  gg <- igraph::graph_from_data_frame(gdf, vertices = nodes, directed = FALSE)
   return(gg)
-}
-
-
-#' Calculate Node and Global Metrics for Trait Networks
-#'
-#' This function computes various node and global metrics for a trait network graph.
-#'
-#' @param graph An igraph object representing the trait network, typically generated by the `TN` function.
-#'
-#' @return A list containing two data frames:
-#'   \item{node}{A data frame with node-level metrics including degree, closeness, betweenness, and local clustering coefficient.}
-#'   \item{global}{A data frame with global metrics including edge density, diameter, average path length, average clustering coefficient, and modularity.}
-#'
-#' @references
-#' 1. He, N., Li, Y., Liu, C., et al. (2020). Plant trait networks: improved resolution of the dimensionality of adaptation. Trends in Ecology & Evolution, 35(10), 908-918. https://doi.org/10.1016/j.tree.2020.06.003
-#' 2. Li, Y., Liu, C., Sack, L., Xu, L., Li, M., Zhang, J., & He, N. (2022). Leaf trait network architecture shifts with species‐richness and climate across forests at continental scale. Ecology Letters, 25(6), 1442-1457. https://doi.org/10.1111/ele.14009
-#'
-#' @examples
-#' data(PFF)
-#' PFF_traits <- PFF[, c("Height", "Leaf_area","LDMC","SLA","SRL","SeedMass","FltDate",
-#'                       "FltDur","Leaf_Cmass","Leaf_Nmass","Leaf_CN","Leaf_Pmass",
-#'                       "Leaf_NP","Leaf_CP","Root_Cmass","Root_Nmass","Root_CN")]
-#' PFF_traits <- na.omit(PFF_traits)
-#' head(PFF_traits)
-#' Tn_result <- TN(traits_matrix = PFF_traits, rThres = 0.2, pThres = 0.05)
-#' TN_metrics(Tn_result)
-#'
-#' @importFrom igraph degree closeness betweenness transitivity edge_density diameter mean_distance cluster_fast_greedy modularity membership
-#' @export
-TN_metrics <- function(graph) {
-  # Node-level metrics
-  degree <- igraph::degree(graph, mode = "all")
-  closeness <- igraph::closeness(graph, mode = "all", weights = NA)
-  betweenness <- igraph::betweenness(graph, directed = FALSE, weights = NA)
-  local_clustering <- igraph::transitivity(graph, type = "local", weights = NA)
-  # Set the clustering coefficient of nodes with degree 0 or 1 to 0
-  local_clustering[is.nan(local_clustering) | degree <= 1] <- 0
-  # Creating node-level metrics dataframe
-  node_metrics <- data.frame(
-    degree = degree,
-    closeness = closeness,
-    betweenness = betweenness,
-    clustering_coefficient = local_clustering
-  )
-  # Global metrics
-  edge_density <- igraph::edge_density(graph, loops = FALSE)
-  diameter <- igraph::diameter(graph, directed = FALSE, weights = NA)
-  avg_path_length <- igraph::mean_distance(graph, directed = FALSE)
-  avg_clustering <- igraph::transitivity(graph, type = "global", weights = NA)
-  fc <- suppressWarnings(igraph::cluster_edge_betweenness(graph, weights = NA))
-  modularity <- igraph::modularity(fc)
-  # Creating global metrics dataframe
-  global_metrics <- data.frame(
-    edge_density = edge_density,
-    diameter = diameter,
-    avg_path_length = avg_path_length,
-    avg_clustering_coefficient = avg_clustering,
-    modularity = modularity
-  )
-  # Return a list containing both node and global metrics
-  return(list(
-    node = node_metrics,
-    global = global_metrics
-  ))
-}
-
-
-#' Plot Trait Network Graph
-#'
-#' This function visualizes the trait network graph generated by the `TN` function.
-#'
-#' @param graph An igraph object representing the trait network.
-#' @param style A numeric value that determines the plotting style (default is 1).
-#' @param vertex.size Numeric value for the size of vertices in the plot (default is 20).
-#' @param vertex.label.cex Numeric value for the scaling factor of vertex labels (default is 0.6).
-#'
-#' @return
-#' An object of class `igraph`. This function generates a visualization of the trait network graph.
-#' When style = 1, it displays a community structure plot.
-#' When style = 2, it displays a circular layout plot where vertex colors represent community membership,
-#' edge thickness represents correlation strength, and edge color represents the sign of the correlation (black for positive, red for negative).
-#'
-#' @details
-#' The function uses the `cluster_edge_betweenness` algorithm to identify communities
-#' in the graph and assigns community membership to vertices. It offers two
-#' plotting styles:
-#' - Style 1: Plots the community structure.
-#' - Style 2: Plots the graph in a circular layout with vertex colors representing communities.
-#' The vertex size and label size can be customized using vertex.size and vertex.label.cex parameters respectively.
-#'
-#' @references
-#' 1. He, N., Li, Y., Liu, C., et al. (2020). Plant trait networks: improved resolution of the dimensionality of adaptation. Trends in Ecology & Evolution, 35(10), 908-918. https://doi.org/10.1016/j.tree.2020.06.003
-#' 2. Li, Y., Liu, C., Sack, L., Xu, L., Li, M., Zhang, J., & He, N. (2022). Leaf trait network architecture shifts with species‐richness and climate across forests at continental scale. Ecology Letters, 25(6), 1442-1457. https://doi.org/10.1111/ele.14009
-#'
-#' @examples
-#' data(PFF)
-#' PFF_traits <- PFF[, c("Height", "Leaf_area","LDMC","SLA","SRL","SeedMass","FltDate",
-#'                       "FltDur","Leaf_Cmass","Leaf_Nmass","Leaf_CN","Leaf_Pmass",
-#'                       "Leaf_NP","Leaf_CP","Root_Cmass","Root_Nmass","Root_CN")]
-#' PFF_traits <- na.omit(PFF_traits)
-#' head(PFF_traits)
-#' Tn_result <- TN(traits_matrix = PFF_traits, rThres = 0.2, pThres = 0.05)
-#' TN_plot(Tn_result, style = 1, vertex.size = 20, vertex.label.cex = 0.6)
-#' TN_plot(Tn_result, style = 2, vertex.size = 20, vertex.label.cex = 0.6)
-#'
-#' @importFrom igraph cluster_edge_betweenness membership layout_in_circle V
-#' @export
-TN_plot <- function(graph, style = 1,vertex.size = 20,vertex.label.cex = 0.6) {
-  comm <- suppressWarnings(igraph::cluster_edge_betweenness(graph, weights = NA))
-  igraph::V(graph)$community <- igraph::membership(comm)
-  layout <- igraph::layout_in_circle(graph, order = order(igraph::V(graph)$community))
-  if (style == 1) {
-    plot(comm, graph,vertex.size = vertex.size,vertex.label.cex = vertex.label.cex,vertex.label.color = "black")
-  } else if (style == 2) {
-    # Get the correlation coefficients of the edges
-    edge_correlation <- igraph::E(graph)$correlation
-    # Set the line width (according to the absolute value of the correlation coefficient)
-    edge_width <- abs(edge_correlation) * 5  # The multiplier can be adjusted to change the line thickness range
-    # Set the color of the edge (blue for negative correlation, green for positive correlation)
-    edge_color <- ifelse(edge_correlation > 0, "green", "blue")
-    # Drawing
-    plot(graph, layout = layout,
-         vertex.color = igraph::V(graph)$community,
-         vertex.label.cex = vertex.label.cex,
-         vertex.label.dist = 0,
-         vertex.size = vertex.size,
-         vertex.label.color = "black",
-         vertex.label.font = 2,
-         edge.width = edge_width,    # Add line width
-         edge.color = edge_color)    # Add line colors
-  } else {
-    stop("Invalid style. Please choose 1 or 2.")
-  }
 }

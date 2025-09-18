@@ -2,27 +2,72 @@
 % Please edit documentation in R/LHS.R
 \name{LHS}
 \alias{LHS}
-\title{Calculate LHS (Leaf-Height-Seed) Strategy}
+\title{Calculate Leaf-Height-Seed (LHS) Plant Ecology Strategy Scheme}
 \usage{
 LHS(data)
 }
 \arguments{
-\item{data}{A data frame containing columns for SLA, Height, and SeedMass.}
+\item{data}{A data frame containing plant trait measurements with required columns:
+\itemize{
+\item \code{SLA}: Specific leaf area (area per unit dry mass of mature leaves)
+\item \code{Height}: Plant height at maturity (canopy height)
+\item \code{SeedMass}: Seed mass
+}
+All values must be positive numbers. NA values are not allowed.}
 }
 \value{
-A data frame with an additional column 'LHS_strategy' containing the calculated LHS strategy.
+A data frame with the original data plus additional columns:
+\itemize{
+\item \code{L}: Percentage contribution of leaf strategy (0-100)
+\item \code{H}: Percentage contribution of height strategy (0-100)
+\item \code{S}: Percentage contribution of seed strategy (0-100)
+\item \code{type}: Classified LHS strategy type based on dominant traits
+}
 }
 \description{
-This function calculates the LHS strategy for plant species based on their SLA (Specific Leaf Area),
-Height, and Seed Mass values.
+The LHS scheme provides a quantitative framework for positioning any vascular
+land plant species within a three-dimensional strategy space without requiring
+time-consuming measurements of metabolic rates or field performance relative
+to other species. All three axes are log-scaled, and the strategy of a species
+is described by its position in the volume formed by the three axes.
+
+The three traits represent fundamental trade-offs:
+\itemize{
+\item \strong{SLA (Specific Leaf Area)}: Light-capturing area deployed per
+dry mass allocated. Reflects variation in responsiveness to opportunities
+for rapid growth.
+\item \strong{Height}: Canopy height at maturity. Related to competitive ability
+for light and coping with disturbance duration.
+\item \strong{Seed Mass}: Reflects dispersal capabilities and seedling
+establishment strategies, expressing separate aspects of coping with disturbance.
+}
 }
 \details{
-The function calculates median values for SLA, Height, and SeedMass from the input data.
-It then determines the LHS strategy for each species based on whether its trait values are
-less than or equal to (S) or greater than (L) the median values.
+This function implements the LHS (Leaf-Height-Seed) plant ecology strategy scheme
+proposed by Westoby (1998). The LHS scheme uses three fundamental plant traits
+to characterize plant strategies: specific leaf area (SLA), plant height at maturity,
+and seed mass. These three axes reflect well-established trade-offs that have
+substantial consequences for how species cope with their physical environment
+and biotic interactions.
 
-The resulting strategy is a combination of three letters (S or L) representing Leaf (SLA),
-Height, and Seed (SeedMass) respectively, separated by hyphens.
+The function performs the following steps:
+\enumerate{
+\item Log-transforms all three trait values to handle the wide range of variation
+\item Applies translation method to ensure all log-transformed values are positive
+\item Normalizes values to percentages that sum to 100 for each species
+\item Classifies each species into one of 19 predefined LHS strategy types
+based on the closest match in the three-dimensional space
+}
+
+The LHS scheme allows for worldwide comparison of plant strategies and facilitates
+meta-analysis across species from different regions, as it provides an explicit
+protocol for determining a species' position without relying on local-context
+information.
+}
+\note{
+This implementation assumes that differences in these traits between species
+are ecologically meaningful, while recognizing that the traits may show some
+environmental modulation and genetic variation within species.
 }
 \examples{
 data(PFF)
@@ -33,7 +78,7 @@ head(result)
 }
 \references{
 \enumerate{
-\item Westoby, M. (1998). A leaf-height-seed (LHS) plant ecology strategy scheme. Plant and Soil, 199, 213–227. https://doi.org/10.1023/A:1004327224729
-\item Yang, J., Wang, Z., Zheng, Y., & Pan, Y. (2022). Shifts in plant ecological strategies in remnant forest patches along urbanization gradients. Forest Ecology and Management, 524, 120540. https://doi.org/10.1016/j.foreco.2022.120540
+\item Westoby, M. (1998). A leaf-height-seed (LHS) plant ecology strategy scheme. Plant and Soil, 199, 213–227.
+\url{https://doi.org/10.1023/A:1004327224729}
 }
 }

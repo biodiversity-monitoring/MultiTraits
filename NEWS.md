@@ -1,3 +1,12 @@
+
+# MultiTraits 0.6.0 (2025-9)
+
+
+
+
+
+
+
 # MultiTraits 0.5.0 (2025-4-20)
 
 ## Bug fixes and minor improvements

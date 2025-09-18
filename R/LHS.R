@@ -1,26 +1,69 @@
-
-library(scatterplot3d)
-
-#' Calculate LHS (Leaf-Height-Seed) Strategy
+#' Calculate Leaf-Height-Seed (LHS) Plant Ecology Strategy Scheme
 #'
-#' This function calculates the LHS strategy for plant species based on their SLA (Specific Leaf Area),
-#' Height, and Seed Mass values.
+#' This function implements the LHS (Leaf-Height-Seed) plant ecology strategy scheme
+#' proposed by Westoby (1998). The LHS scheme uses three fundamental plant traits
+#' to characterize plant strategies: specific leaf area (SLA), plant height at maturity,
+#' and seed mass. These three axes reflect well-established trade-offs that have
+#' substantial consequences for how species cope with their physical environment
+#' and biotic interactions.
 #'
-#' @param data A data frame containing columns for SLA, Height, and SeedMass.
+#' @description
+#' The LHS scheme provides a quantitative framework for positioning any vascular
+#' land plant species within a three-dimensional strategy space without requiring
+#' time-consuming measurements of metabolic rates or field performance relative
+#' to other species. All three axes are log-scaled, and the strategy of a species
+#' is described by its position in the volume formed by the three axes.
 #'
-#' @return A data frame with an additional column 'LHS_strategy' containing the calculated LHS strategy.
+#' The three traits represent fundamental trade-offs:
+#' \itemize{
+#'   \item \strong{SLA (Specific Leaf Area)}: Light-capturing area deployed per
+#'         dry mass allocated. Reflects variation in responsiveness to opportunities
+#'         for rapid growth.
+#'   \item \strong{Height}: Canopy height at maturity. Related to competitive ability
+#'         for light and coping with disturbance duration.
+#'   \item \strong{Seed Mass}: Reflects dispersal capabilities and seedling
+#'         establishment strategies, expressing separate aspects of coping with disturbance.
+#' }
 #'
-#' @details The function calculates median values for SLA, Height, and SeedMass from the input data.
-#' It then determines the LHS strategy for each species based on whether its trait values are
-#' less than or equal to (S) or greater than (L) the median values.
+#' @param data A data frame containing plant trait measurements with required columns:
+#'   \itemize{
+#'     \item \code{SLA}: Specific leaf area (area per unit dry mass of mature leaves)
+#'     \item \code{Height}: Plant height at maturity (canopy height)
+#'     \item \code{SeedMass}: Seed mass
+#'   }
+#'   All values must be positive numbers. NA values are not allowed.
 #'
-#' The resulting strategy is a combination of three letters (S or L) representing Leaf (SLA),
-#' Height, and Seed (SeedMass) respectively, separated by hyphens.
+#' @return A data frame with the original data plus additional columns:
+#'   \itemize{
+#'     \item \code{L}: Percentage contribution of leaf strategy (0-100)
+#'     \item \code{H}: Percentage contribution of height strategy (0-100)
+#'     \item \code{S}: Percentage contribution of seed strategy (0-100)
+#'     \item \code{type}: Classified LHS strategy type based on dominant traits
+#'   }
 #'
+#' @details
+#' The function performs the following steps:
+#' \enumerate{
+#'   \item Log-transforms all three trait values to handle the wide range of variation
+#'   \item Applies translation method to ensure all log-transformed values are positive
+#'   \item Normalizes values to percentages that sum to 100 for each species
+#'   \item Classifies each species into one of 19 predefined LHS strategy types
+#'         based on the closest match in the three-dimensional space
+#' }
+#'
+#' The LHS scheme allows for worldwide comparison of plant strategies and facilitates
+#' meta-analysis across species from different regions, as it provides an explicit
+#' protocol for determining a species' position without relying on local-context
+#' information.
+#'
+#' @note
+#' This implementation assumes that differences in these traits between species
+#' are ecologically meaningful, while recognizing that the traits may show some
+#' environmental modulation and genetic variation within species.
 #'
 #' @references
-#' 1. Westoby, M. (1998). A leaf-height-seed (LHS) plant ecology strategy scheme. Plant and Soil, 199, 213–227. https://doi.org/10.1023/A:1004327224729
-#' 2. Yang, J., Wang, Z., Zheng, Y., & Pan, Y. (2022). Shifts in plant ecological strategies in remnant forest patches along urbanization gradients. Forest Ecology and Management, 524, 120540. https://doi.org/10.1016/j.foreco.2022.120540
+#' 1. Westoby, M. (1998). A leaf-height-seed (LHS) plant ecology strategy scheme. Plant and Soil, 199, 213–227.
+#' \url{https://doi.org/10.1023/A:1004327224729}
 #'
 #' @examples
 #' data(PFF)
@@ -28,150 +71,55 @@ library(scatterplot3d)
 #' result <- LHS(pff)
 #' head(result)
 #'
-#' @importFrom stats median
 #' @export
 LHS <- function(data) {
-  # Calculating the median SLA, Height and SeedMass
-  sla_median <- stats::median(data$SLA, na.rm = TRUE)
-  height_median <- stats::median(data$Height, na.rm = TRUE)
-  seedmass_median <- stats::median(data$SeedMass, na.rm = TRUE)
-
-  # Define a function to determine the LHS strategy
-  get_strategy <- function(sla, height, seedmass) {
-    s <- ifelse(sla <= sla_median, "S", "L")
-    h <- ifelse(height <= height_median, "S", "L")
-    m <- ifelse(seedmass <= seedmass_median, "S", "L")
-    paste(s, h, m, sep = "-")
+  # Check input data
+  if (!is.data.frame(data)) {
+    stop("The input must be a dataframe")
   }
-
-  # Apply functions to data and add LHS strategy column
-  data$LHS_strategy <- mapply(get_strategy, data$SLA, data$Height, data$SeedMass)
-
+  if(!all(c("SLA", "Height", "SeedMass") %in% names(data))) {
+    stop("Input data must contain columns: SLA, Height, SeedMass")
+  }
+  # Check for NA values in required columns
+  required_columns <- c("SLA", "Height", "SeedMass")
+  na_check <- sapply(data[required_columns], function(x) any(is.na(x)))
+  if (any(na_check)) {
+    na_cols <- names(na_check)[na_check]
+    stop(paste("NA values found in column(s):",
+               paste(na_cols, collapse = ", "),
+               ". Please remove or handle NA values before processing."))
+  }
+  if (any(data$SLA <= 0 | data$Height <= 0 | data$SeedMass <= 0, na.rm = TRUE)) {
+    stop("SLA, Height and SeedMass must be positive numbers to calculate the LHS percentage")
+  }
+  # Log transformation
+  log_sla       <- log(data$SLA)
+  log_height    <- log(data$Height)
+  log_seedmass  <- log(data$SeedMass)
+  # Translation Method: Set Minimum Value to Zero
+  min_val <- min(c(log_sla, log_height, log_seedmass), na.rm = TRUE)
+  log_sla_pos      <- log_sla      + abs(min_val)
+  log_height_pos   <- log_height   + abs(min_val)
+  log_seedmass_pos <- log_seedmass + abs(min_val)
+  # Normalize to percentage
+  sum_pos <- log_sla_pos + log_height_pos + log_seedmass_pos
+  data$L <- (log_sla_pos / sum_pos) * 100
+  data$H <- (log_height_pos / sum_pos) * 100
+  data$S <- (log_seedmass_pos / sum_pos) * 100
+  # Reference LHS strategy types
+  L_values <- c(90, 73, 73, 48, 54, 48, 42, 42, 23, 33, 23, 23, 23, 5, 17, 5, 5, 5, 5)
+  H_values <- c(5, 5, 23, 5, 23, 48, 17, 42, 5, 33, 73, 23, 54, 5, 42, 90, 23, 73, 48)
+  S_values <- c(5, 23, 5, 48, 23, 5, 42, 17, 73, 33, 5, 54, 23, 90, 42, 5, 73, 23, 48)
+  LHS_types <- c("L", "L/LS", "L/LH", "LS", "L/LHS", "LH", "LS/LHS", "LH/LHS",
+                 "S/LS", "LHS", "H/LH", "S/LHS", "H/LHS", "S", "HS/LHS",
+                 "H", "S/HS", "H/HS", "HS")
+  # Determine closest LHS type
+  data$type <- sapply(1:nrow(data), function(i) {
+    variances <- (data$L[i] - L_values)^2 +
+      (data$H[i] - H_values)^2 +
+      (data$S[i] - S_values)^2
+    min_variance_index <- which.min(variances)
+    return(LHS_types[min_variance_index])
+  })
   return(data)
 }
-
-
-#' Generate a 3D scatterplot of plant traits
-#'
-#' This function creates a three-dimensional scatterplot of plant traits (Specific Leaf Area, Height, and Seed Mass) based on the Leaf-Height-Seed (LHS) plant ecology strategy scheme.
-#'
-#' @param data A data frame containing columns: SLA, Height, SeedMass, and LHS_strategy.
-#' @param colors A vector of colors for different LHS strategies. Default is a predefined color palette.
-#' @param log_transform Logical, indicating whether to log-transform the data. Default is TRUE.
-#'
-#' @return A 3D scatterplot of SLA, Height, and Seed Mass (optionally log-transformed), with points colored by LHS strategy.
-#'
-#' @details
-#' The function performs the following steps:
-#' Checks if the input data contains the required columns.
-#' Converts LHS_strategy to a factor.
-#' Optionally log-transforms the data based on the log_transform parameter.
-#' Creates a 3D scatterplot using (potentially log-transformed) values of SLA, Height, and Seed Mass.
-#' Colors points based on LHS strategy.
-#' Adds a legend to identify different LHS strategies.
-#'
-#' @references
-#' 1. Westoby, M. (1998). A leaf-height-seed (LHS) plant ecology strategy scheme. Plant and Soil, 199, 213–227. https://doi.org/10.1023/A:1004327224729
-#' 2. Yang, J., Wang, Z., Zheng, Y., & Pan, Y. (2022). Shifts in plant ecological strategies in remnant forest patches along urbanization gradients. Forest Ecology and Management, 524, 120540. https://doi.org/10.1016/j.foreco.2022.120540
-#'
-#' @importFrom scatterplot3d scatterplot3d
-#' @importFrom graphics legend
-#'
-#' @examples
-#' data(PFF)
-#' pff <- PFF[, c("SLA", "Height", "SeedMass")]
-#' result <- LHS(pff)
-#' LHS_plot(result)
-#' LHS_plot(result, log_transform = FALSE)
-#'
-#' @export
-LHS_plot <- function(data,
-                     colors = c("#30123BFF", "#4777EFFF", "#1BD0D5FF", "#62FC6BFF",
-                                "#D2E935FF", "#FE9B2DFF", "#DB3A07FF", "#7A0403FF"),
-                     log_transform = TRUE) {
-  # Check required columns
-  required_cols <- c("SLA", "Height", "SeedMass", "LHS_strategy")
-  if (!all(required_cols %in% names(data))) {
-    missing_cols <- setdiff(required_cols, names(data))
-    stop(paste("Data is missing the following columns:", paste(missing_cols, collapse = ", ")))
-  }
-  # Convert LHS_strategy to factors
-  data$LHS_strategy <- as.factor(data$LHS_strategy)
-  # Determine if logarithmic conversion is performed
-  transform_func <- if (log_transform) log else identity
-  # Prepare shaft labels
-  x_label <- if(log_transform) expression(log~"(SLA)") else "SLA"
-  y_label <- if(log_transform) expression(log~"(Height)") else "Height"
-  z_label <- if(log_transform) expression(log~"(Seed mass)") else "Seed mass"
-  # Create 3D scatterplots
-  s3d <- scatterplot3d::scatterplot3d(transform_func(data$SLA),
-                                      transform_func(data$Height),
-                                      transform_func(data$SeedMass),
-                                      color = colors[as.numeric(data$LHS_strategy)],
-                                      bg = colors[as.numeric(data$LHS_strategy)],
-                                      xlab = x_label,
-                                      ylab = y_label,
-                                      zlab = z_label,
-                                      type = "h",
-                                      pch = 21,
-                                      axis = TRUE,
-                                      box = FALSE,
-                                      grid = TRUE,
-                                      angle = 60)
-  # Add legend
-  graphics::legend("topright",
-                   legend = levels(data$LHS_strategy),
-                   title = expression(bold("Types")),
-                   cex = 0.8,
-                   col = "black",
-                   pt.bg = colors,
-                   pch = 21,
-                   box.lty = 1,
-                   title.adj = 0.3,
-                   y.intersp = 1.05,
-                   x.intersp = 1,
-                   yjust = 1,
-                   bg = "white")
-}
-
-
-#' Create a table of Leaf-Height-Seed (LHS) strategy types
-#'
-#' This function generates a data frame containing different plant growth strategies
-#' based on the Leaf-Height-Seed (LHS) scheme. Each strategy is described by a
-#' combination of traits and their corresponding ecological interpretation.
-#'
-#' @return A data frame with two columns:
-#'   \describe{
-#'     \item{type}{Character vector of LHS strategy combinations (e.g., "L-L-L", "L-L-S", etc.)}
-#'     \item{strategy}{Character vector describing the ecological strategy for each type}
-#'   }
-#'
-#'
-#' @references
-#' 1. Westoby, M. (1998). A leaf-height-seed (LHS) plant ecology strategy scheme. Plant and Soil, 199, 213–227. https://doi.org/10.1023/A:1004327224729
-#' 2. Yang, J., Wang, Z., Zheng, Y., & Pan, Y. (2022). Shifts in plant ecological strategies in remnant forest patches along urbanization gradients. Forest Ecology and Management, 524, 120540. https://doi.org/10.1016/j.foreco.2022.120540
-#'
-#' @examples
-#' LHS_strategy_scheme()
-#'
-#' @export
-LHS_strategy_scheme <- function(){
-  LHS_strategy_table <- data.frame(
-    type=c( "L-L-L","L-L-S",  "L-S-L","L-S-S", "S-L-L","S-L-S","S-S-L", "S-S-S"),
-    strategy=c(
-      "Rapid growth, strong survivability and competitiveness",
-      "Rapid growth, strong survivability and weak competitiveness",
-      "Rapid growth, long-distance dispersal and strong competitiveness",
-      "Rapid growth, long-distance dispersal and weak competitiveness",
-      "Slow growth, strong survivability and competitiveness",
-      "Slow growth, strong survivability and weak competitiveness",
-      "Slow growth, long-distance dispersal and strong competitiveness",
-      "Slow growth, long-distance dispersal and weak competitiveness")
-  )
-  return(LHS_strategy_table)
-}
-
-
-
-

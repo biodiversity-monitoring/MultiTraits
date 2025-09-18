@@ -1,14 +1,14 @@
-
 #' Plant Functional Traits Dataset from Ponderosa Pine Forests Flora (PFF)
 #'
 #' @description
 #' A dataset containing functional traits for 133 plant species commonly found in
 #' southwestern USA Pinus ponderosa var. scopulorum P. & C. Lawson (ponderosa pine) forests.
 #'
-#' @format A data frame with 137 rows and 20 variables:
+#' @format A data frame with 137 rows and 21 variables:
 #' \describe{
-#'   \item{family}{Plant family}
-#'   \item{species}{Plant species}
+#'   \item{species}{Plant species name}
+#'   \item{genus}{Plant genus name}
+#'   \item{family}{Plant family name}
 #'   \item{Height}{Canopy height (cm)}
 #'   \item{Leaf_area}{Leaf area (mm^2)}
 #'   \item{LDMC}{Leaf dry matter content (%)}
@@ -41,7 +41,7 @@
 #' @source
 #' Laughlin, D. C., Leppert, J. J., Moore, M. M., & Sieg, C. H. (2010). A multi-trait test
 #' of the leaf-height-seed plant strategy scheme with 133 species from a pine forest flora.
-#' Functional Ecology, 24(3), 485-700.
+#' Functional Ecology, 24(3), 485-700. \url{https://doi.org/10.1111/j.1365-2435.2009.01672.x}
 #'
 #' @examples
 #' data(PFF)

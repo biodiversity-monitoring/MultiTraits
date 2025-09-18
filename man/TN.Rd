@@ -4,47 +4,92 @@
 \alias{TN}
 \title{Generate Plant Trait Network}
 \usage{
-TN(traits_matrix, rThres = 0.2, pThres = 0.05, method = "pearson")
+TN(
+  traits_matrix,
+  rThres = 0.2,
+  pThres = 0.05,
+  method = "pearson",
+  phylo_correction = FALSE,
+  phylo_tree = NULL
+)
 }
 \arguments{
-\item{traits_matrix}{A numeric matrix where each column represents a plant trait and each row represents a sample.}
+\item{traits_matrix}{A numeric matrix or data frame where each column represents a plant trait and each row represents a sample/species. Row names should contain species names when using phylogenetic correction.}
 
 \item{rThres}{Numeric, threshold for correlation coefficient, default is 0.2. Correlations with absolute values below this threshold are set to zero.}
 
 \item{pThres}{Numeric, threshold for p-value, default is 0.05. Only correlations with p-values below this threshold are included in the network.}
 
 \item{method}{Character, specifies the correlation method to use: "pearson" (default) or "spearman".}
+
+\item{phylo_correction}{Logical, whether to apply phylogenetic correction using phylogenetic independent contrasts, default is FALSE.}
+
+\item{phylo_tree}{A phylo object from the ape package containing the phylogenetic tree. Required when phylo_correction = TRUE. Species names in the tree must match row names in traits_matrix.}
 }
 \value{
-Returns an igraph object representing the trait network.
+Returns an igraph object representing the trait network with the following attributes:
+\itemize{
+\item Edge attribute 'correlation': original correlation values (positive or negative)
+\item Edge attribute 'weight': absolute correlation values used for network analysis
+\item Vertices represent traits that pass the correlation and significance thresholds
+}
 }
 \description{
-This function creates a network graph from a plant trait correlation matrix, applying thresholds for correlation strength and significance.
+This function creates a network graph from a plant trait correlation matrix, applying thresholds for correlation strength and significance. It supports both standard correlations and phylogenetic independent contrasts.
 }
 \details{
 The function performs the following steps:
 \enumerate{
-\item Calculates Pearson correlation coefficients and p-values for the trait matrix.
+\item Validates input parameters and phylogenetic tree compatibility (if applicable).
+\item Calculates correlation coefficients and p-values using either standard correlation or phylogenetic independent contrasts.
 \item Applies correlation coefficient and p-value thresholds to filter relationships.
+\item Adjusts p-values using False Discovery Rate (FDR) correction.
 \item Constructs an unweighted undirected graph from the filtered correlation matrix.
 \item Removes self-loops and isolated nodes from the graph.
 \item Adds correlation coefficients as edge attributes.
 }
+
+When phylo_correction = TRUE, the function:
+\itemize{
+\item Matches species names between traits_matrix and phylo_tree
+\item Calculates phylogenetic independent contrasts for each trait
+\item Computes correlations between contrasts to control for phylogenetic relatedness
+}
 }
 \examples{
+# Example 1: Standard trait network analysis
 data(PFF)
+rownames(PFF) <- PFF$species
 PFF_traits <- PFF[, c("Height", "Leaf_area","LDMC","SLA","SRL","SeedMass","FltDate",
                       "FltDur","Leaf_Cmass","Leaf_Nmass","Leaf_CN","Leaf_Pmass",
                       "Leaf_NP","Leaf_CP","Root_Cmass","Root_Nmass","Root_CN")]
 PFF_traits <- na.omit(PFF_traits)
 head(PFF_traits)
+
 Tn_result <- TN(traits_matrix = PFF_traits, rThres = 0.2, pThres = 0.05, method = "pearson")
 Tn_result
+
+# Example 2: Phylogenetically corrected trait network analysis
+data(PFF_tree)
+
+# Trait network with phylogenetic correction
+Tn_phylo_result <- TN(traits_matrix = PFF_traits,
+                      rThres = 0.2,
+                      pThres = 0.05,
+                      method = "pearson",
+                      phylo_correction = TRUE,
+                      phylo_tree = PFF_tree)
+Tn_phylo_result
+
 
 }
 \references{
 \enumerate{
-\item He, N., Li, Y., Liu, C., et al. (2020). Plant trait networks: improved resolution of the dimensionality of adaptation. Trends in Ecology & Evolution, 35(10), 908-918. https://doi.org/10.1016/j.tree.2020.06.003
-\item Li, Y., Liu, C., Sack, L., Xu, L., Li, M., Zhang, J., & He, N. (2022). Leaf trait network architecture shifts with species‐richness and climate across forests at continental scale. Ecology Letters, 25(6), 1442-1457. https://doi.org/10.1111/ele.14009
+\item He, N., Li, Y., Liu, C., et al. (2020). Plant trait networks: improved resolution of the dimensionality of adaptation.
+Trends in Ecology & Evolution, 35(10), 908-918.
+\url{https://doi.org/10.1016/j.tree.2020.06.003}
+\item Li, Y., Liu, C., Sack, L., Xu, L., Li, M., Zhang, J., & He, N. (2022). Leaf trait network architecture shifts with
+species‐richness and climate across forests at continental scale. Ecology Letters, 25(6), 1442-1457.
+\url{https://doi.org/10.1111/ele.14009}
 }
 }
