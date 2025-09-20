@@ -102,6 +102,7 @@ LHS_plot <- function(
     ggtern::geom_mask() +
     ggplot2::geom_point(size=point_size, shape=point_shape, color="black") +
     ggtern::theme_rgbw() +
+    ggtern::theme_clockwise() +
     scale_fill_manual(values = custom_colors) +
     ggplot2::labs(x="S (%)", y="L (%)", z="H (%)", fill="Types") +
     # Theme Setting

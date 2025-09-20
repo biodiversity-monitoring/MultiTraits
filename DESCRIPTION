@@ -2,7 +2,7 @@ Package: MultiTraits
 Type: Package
 Title: Analyzing and Visualizing Multidimensional Plant Traits
 Version: 0.6.0
-Date: 2025-9-18
+Date: 2025-9-20
 Authors@R: c(person("Yan", "He", email = "heyan@njfu.edu.cn", role = c("aut", "cre")),person("Zhaogang", "Liu", role = "aut"),person("Jiangshan", "Lai", role = "aut"),person("Lingfeng", "Mao", role = "aut"))
 Maintainer: Yan He <heyan@njfu.edu.cn>
 Description: Implements analytical methods for multidimensional plant traits, including Competitors-Stress tolerators-Ruderals strategy analysis using leaf traits, Leaf-Height-Seed strategy analysis, Niche Periodicity Table analysis, and Trait Network analysis. Provides functions for data analysis, visualization, and network metrics calculation. Methods are based on Grime (1974) <doi:10.1038/250026a0>, Pierce et al. (2017) <doi:10.1111/1365-2435.12882>, Westoby (1998) <doi:10.1023/A:1004327224729>, Winemiller et al. (2015) <doi:10.1111/ele.12462>, He et al. (2020) <doi:10.1016/j.tree.2020.06.003>.
@@ -17,7 +17,7 @@ Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.3.2
 Config/testthat/edition: 3
 NeedsCompilation: no
-Packaged: 2025-09-20 13:54:49 UTC; Administrator
+Packaged: 2025-09-20 14:16:52 UTC; Administrator
 Author: Yan He [aut, cre],
   Zhaogang Liu [aut],
   Jiangshan Lai [aut],
