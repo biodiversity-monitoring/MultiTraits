@@ -90,13 +90,13 @@ CSR_plot <- function(
       "S/SR" = "#0DBA3B",
       "SR" = "#0D7A7A")
 ){
-  p1 <- ggtern::ggtern(data=data, aes(x=.data$R, y=.data$C, z=.data$S, fill=.data$type)) +
+  p1 <- ggtern::ggtern(data=data, aes(x=.data$S, y=.data$C, z=.data$R, fill=.data$type)) +
     ggtern::limit_tern(T=expand_margin, L=expand_margin, R=expand_margin) +
     ggtern::geom_mask() +
     ggplot2::geom_point(size=point_size, shape=point_shape, color="black") +
     ggtern::theme_rgbw() +
     scale_fill_manual(values = custom_colors) +
-    ggplot2::labs(x="R (%)", y="C (%)", z="S (%)", fill="Types") +
+    ggplot2::labs(x="S (%)", y="C (%)", z="R (%)", fill="Types") +
     # Theme Setting
     ggplot2::theme(
       # Legend position and border settings
