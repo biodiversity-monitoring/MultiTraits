@@ -97,13 +97,13 @@ LHS_plot <- function(
       "H/HS" = "#0DBA3B",
       "HS" = "#0D7A7A")
 ){
-  p1 <- ggtern::ggtern(data=data, aes(x=.data$H, y=.data$L, z=.data$S, fill=.data$type)) +
+  p1 <- ggtern::ggtern(data=data, aes(x=.data$S, y=.data$L, z=.data$H, fill=.data$type)) +
     ggtern::limit_tern(T=expand_margin, L=expand_margin, R=expand_margin) +
     ggtern::geom_mask() +
     ggplot2::geom_point(size=point_size, shape=point_shape, color="black") +
     ggtern::theme_rgbw() +
     scale_fill_manual(values = custom_colors) +
-    ggplot2::labs(x="H (%)", y="L (%)", z="S (%)", fill="Types") +
+    ggplot2::labs(x="S (%)", y="L (%)", z="H (%)", fill="Types") +
     # Theme Setting
     ggplot2::theme(
       # Legend position and border settings
