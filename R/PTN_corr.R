@@ -68,14 +68,14 @@
 #'                       "Leaf_NP","Leaf_CP","Root_Cmass","Root_Nmass","Root_CN")]
 #' PFF_traits <- na.omit(PFF_traits)
 #' head(PFF_traits)
-#' TN_corr(traits_matrix = PFF_traits, rThres = 0.2, pThres = 0.05, method = "pearson")
+#' PTN_corr(traits_matrix = PFF_traits, rThres = 0.2, pThres = 0.05, method = "pearson")
 #'
 #' data(PFF_tree)
-#' TN_corr(traits_matrix = PFF_traits, rThres = 0.2, pThres = 0.05, method = "pearson",
+#' PTN_corr(traits_matrix = PFF_traits, rThres = 0.2, pThres = 0.05, method = "pearson",
 #'         phylo_correction = TRUE,phylo_tree = PFF_tree)
 #'
 #' @export
-TN_corr <- function(traits_matrix, rThres = 0.2, pThres = 0.05, method = "pearson",
+PTN_corr <- function(traits_matrix, rThres = 0.2, pThres = 0.05, method = "pearson",
                     phylo_correction = FALSE, phylo_tree = NULL) {
   # Validate the method parameter
   method <- match.arg(method, choices = c("pearson", "spearman"))

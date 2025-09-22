@@ -55,24 +55,24 @@
 #' PFF_traits <- na.omit(PFF_traits)
 #' head(PFF_traits)
 #'
-#' Tn_result <- TN(traits_matrix = PFF_traits, rThres = 0.2, pThres = 0.05, method = "pearson")
-#' Tn_result
+#' ptn_result <- PTN(traits_matrix = PFF_traits, rThres = 0.2, pThres = 0.05, method = "pearson")
+#' ptn_result
 #'
 #' # Example 2: Phylogenetically corrected trait network analysis
 #' data(PFF_tree)
 #'
 #' # Trait network with phylogenetic correction
-#' Tn_phylo_result <- TN(traits_matrix = PFF_traits,
+#' ptn_phylo_result <- PTN(traits_matrix = PFF_traits,
 #'                       rThres = 0.2,
 #'                       pThres = 0.05,
 #'                       method = "pearson",
 #'                       phylo_correction = TRUE,
 #'                       phylo_tree = PFF_tree)
-#' Tn_phylo_result
+#' ptn_phylo_result
 #'
 #'
 #' @export
-TN <- function(traits_matrix, rThres = 0.2, pThres = 0.05, method = "pearson",
+PTN <- function(traits_matrix, rThres = 0.2, pThres = 0.05, method = "pearson",
                phylo_correction = FALSE, phylo_tree = NULL) {
   # Validate the method parameter
   method <- match.arg(method, choices = c("pearson", "spearman"))
