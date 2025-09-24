@@ -1,133 +1,171 @@
-#' Create a Ternary Plot for LHS Plant Strategy Analysis
+#' Create 3D Scatter Plot for LHS Plant Ecological Strategy Data
 #'
-#' This function creates a ternary plot visualization for the Leaf-Height-Seed (LHS)
-#' plant ecology strategy scheme. The plot displays species according to their relative
-#' positions on three fundamental plant strategy axes: specific leaf area (L), canopy
-#' height (H), and seed mass (S).
+#' This function creates a three-dimensional scatter plot to visualise the LHS (Leaf-Height-Seed)
+#' plant ecological strategy scheme proposed by Westoby (1998). The plot displays species positions
+#' in the three-dimensional LHS space defined by log-transformed specific leaf area (SLA),
+#' canopy height at maturity, and seed mass.
 #'
-#' @param data A data frame containing the LHS analysis results with columns:
-#'   \describe{
-#'     \item{L}{Numeric. Leaf area proportion (percentage)}
-#'     \item{H}{Numeric. Height proportion (percentage)}
-#'     \item{S}{Numeric. Seed mass proportion (percentage)}
-#'     \item{type}{Character. Strategy classification (e.g., "L", "H", "S", "LH", "LS", "HS", "LHS", etc.)}
-#'   }
-#' @param point_size Numeric. Size of points in the plot. Default is 3.
-#' @param point_shape Numeric. Shape of points following ggplot2 conventions.
-#'   Default is 21 (filled circles with borders).
-#' @param expand_margin Numeric. Value to expand the ternary plot margins.
-#'   Default is 1.
-#' @param custom_colors Named character vector. Colors for different LHS strategy
-#'   types. Should include colors for all 19 possible strategy combinations:
-#'   "L", "L/LS", "L/LH", "LS", "L/LHS", "LH", "LS/LHS", "LH/LHS", "S/LS",
-#'   "LHS", "H/LH", "S/LHS", "H/LHS", "S", "HS/LHS", "H", "S/HS", "H/HS", "HS".
-#'
-#' @return A ggplot object representing the ternary plot visualization of LHS
-#'   plant strategies. The plot includes:
-#'   \itemize{
-#'     \item Ternary coordinate system with S, L, and H axes
-#'     \item Color-coded points representing different strategy types
-#'     \item Legend showing strategy classifications
-#'     \item Grid lines and axis arrows for reference
-#'   }
-#'
-#' @details
-#' The LHS scheme represents plant strategies in a three-dimensional space where
-#' each axis reflects fundamental trade-offs controlling plant strategies:
-#'
-#' \describe{
-#'   \item{Specific Leaf Area (SLA)}{Light-capturing area deployed per unit dry mass,
-#'     reflecting the trade-off between rapid resource capture and leaf longevity}
-#'   \item{Height}{Canopy height at maturity, representing the trade-off between
-#'     access to light and structural investment costs}
-#'   \item{Seed Mass}{Reflecting the trade-off between seed output per unit
-#'     reproductive effort and seedling survival capacity}
+#' @description
+#' The LHS scheme uses three fundamental plant traits that reflect important trade-offs
+#' controlling plant ecological strategies :
+#' \itemize{
+#'   \item \strong{Specific Leaf Area (SLA)}: Light-capturing area deployed per unit dry mass,
+#'         reflecting the trade-off between rapid resource acquisition and leaf longevity
+#'   \item \strong{Height}: Canopy height at maturity, expressing the amount of growth attempted
+#'         between disturbances and competitive ability for light
+#'   \item \strong{Seed Mass}: Reflecting the trade-off between seed number and individual seed
+#'         provisioning, affecting dispersal capacity and seedling survival
 #' }
 #'
-#' The function creates a ternary plot using the \code{ggtern} package, where
-#' species are positioned according to their relative emphasis on each of the
-#' three strategy dimensions. Different colors represent different strategy types
-#' based on which axes are most prominent for each species.
+#' All three axes are log-scaled as they are approximately lognormally distributed between
+#' species. The 3D visualisation allows researchers to explore species clustering
+#' and relationships within the LHS strategy space, facilitating the identification of
+#' functional groups and ecological patterns.
 #'
-#' The legend automatically adjusts to display in one or two columns depending on
-#' the number of strategy types present in the data (single column for ≤10 types,
-#' two columns for >10 types).
-#
-#' @seealso
-#' \code{\link{LHS}} for performing LHS analysis on raw trait data.
+#' @param data A data frame containing LHS analysis results with the following required columns:
+#' \describe{
+#'   \item{log_SLA}{Natural logarithm of specific leaf area}
+#'   \item{log_Height}{Natural logarithm of canopy height at maturity}
+#'   \item{log_SeedMass}{Natural logarithm of seed mass}
+#' }
+#' Typically this would be the output from the \code{LHS()} function. Row names should
+#' represent species names or identifiers.
+#'
+#' @param group Character string specifying the column name to use for grouping points by colour.
+#' If \code{NULL} (default), all points will be plotted in the same colour. Common choices
+#' include \code{"LHS_strategy"} to colour by the eight LHS strategy types (e.g., "S-S-S",
+#' "L-L-L") or any other categorical variable in the dataset.
+#'
+#' @param show_cube Logical indicating whether to display the 3D cube frame around the plot.
+#' Default is \code{TRUE}, which helps with spatial orientation and depth perception.
+#'
+#' @param colors Character vector of colours to use for different groups. Should contain at
+#' least as many colours as there are levels in the grouping variable. Default provides
+#' a viridis-inspired colour palette with 8 colours suitable for the 8 LHS strategy types.
+#' If only one group is plotted, only the first colour will be used.
+#'
+#' @param cube_angle Numeric value specifying the viewing angle for the 3D plot in degrees.
+#' Default is 60. Values between 40-80 typically provide good visualisation perspectives.
+#'
+#' @details
+#' The function creates a 3D scatter plot using the \code{scatterplot3d} package, with
+#' log-transformed trait values on each axis. When grouping is specified, the plot includes
+#' an automated legend positioned to the right of the main plot area.
+#'
+#' The three axes represent the core dimensions of the LHS ecological strategy space:
+#' \itemize{
+#'   \item X-axis: log(SLA) - reflects the leaf economics spectrum from resource-conservative
+#'         to resource-acquisitive strategies
+#'   \item Y-axis: log(Height) - represents the plant size spectrum and competitive ability
+#'         for light capture
+#'   \item Z-axis: log(Seed Mass) - indicates the seed size spectrum affecting dispersal
+#'         and establishment success
+#' }
+#'
+#' The function automatically handles layout management when legends are displayed,
+#' ensuring optimal use of plotting space.
+#'
+#' @return Invisibly returns the \code{scatterplot3d} object, which can be used for
+#' adding additional graphical elements to the plot if needed.
+#'
 #'
 #' @references
 #' 1. Westoby, M. (1998). A leaf-height-seed (LHS) plant ecology strategy scheme. Plant and Soil, 199, 213–227.
 #' \url{https://doi.org/10.1023/A:1004327224729}
+#' 2. Yang, J., Wang, Z., Zheng, Y., & Pan, Y. (2022). Shifts in plant ecological strategies in remnant forest patches along urbanization gradients. Forest Ecology and Management, 524, 120540.
+#' \url{https://doi.org/10.1016/j.foreco.2022.120540}
 #'
-#' @importFrom ggplot2 ggplot aes geom_point labs theme element_rect element_text margin unit scale_fill_manual guides guide_legend
-#' @importFrom ggtern ggtern limit_tern geom_mask theme_rgbw theme_showarrows theme_showgrid
-#' @importFrom rlang .data
+#' @importFrom scatterplot3d scatterplot3d
+#' @importFrom graphics legend layout par plot.new
 #'
 #' @examples
 #' data(PFF)
 #' pff <- PFF[, c("SLA", "Height", "SeedMass")]
+#' rownames(pff) <- PFF$species
+#' head(pff)
 #' result <- LHS(pff)
+#' head(result)
 #' LHS_plot(result)
-#'
+#' LHS_plot(result, group = "LHS_strategy", show_cube = TRUE)
 #' @export
-LHS_plot <- function(
-    data,
-    point_size = 3,
-    point_shape = 21,
-    expand_margin = 1,
-    custom_colors = c(
-      "L" = "#E60D0D",
-      "L/LS" = "#BA0D3B",
-      "L/LH" = "#BA3B0D",
-      "LS" = "#7A0D7A",
-      "L/LHS" = "#8A3B3B",
-      "LH" = "#7A7A0D",
-      "LS/LHS" = "#6B2B6B",
-      "LH/LHS" = "#6B6B2B",
-      "S/LS" = "#3B0DBA",
-      "LHS" = "#545454",
-      "H/LH" = "#3BBA0D",
-      "S/LHS" = "#3B3B8A",
-      "H/LHS" = "#3B8A3B",
-      "S" = "#0D0DE6",
-      "HS/LHS" = "#2B6B6B",
-      "H" = "#0DE60D",
-      "S/HS" = "#0D3BBA",
-      "H/HS" = "#0DBA3B",
-      "HS" = "#0D7A7A")
-){
-  p1 <- ggtern::ggtern(data=data, aes(x=.data$S, y=.data$L, z=.data$H, fill=.data$type)) +
-    ggtern::limit_tern(T=expand_margin, L=expand_margin, R=expand_margin) +
-    ggtern::geom_mask() +
-    ggplot2::geom_point(size=point_size, shape=point_shape, color="black") +
-    ggtern::theme_rgbw() +
-    ggtern::theme_clockwise() +
-    scale_fill_manual(values = custom_colors) +
-    ggplot2::labs(x="S (%)", y="L (%)", z="H (%)", fill="Types") +
-    # Theme Setting
-    ggplot2::theme(
-      # Legend position and border settings
-      legend.position = "right",
-      legend.background = element_rect(color="black", linewidth=0.5),
-      legend.margin = margin(4, 4, 4, 4),
-      legend.key = element_rect(fill = NA, color = NA),
-      legend.key.size = unit(0.4, "cm"),
-      # text setting
-      text = element_text(size=12, family="serif"),
-      legend.text = element_text(size=8),
-      legend.title = element_text(size=9, face="bold"),
-      # Legend Spacing Settings
-      legend.spacing.y = unit(0.2, "cm"),
-      # Maintain legend as single or double column
-      legend.box = "vertical"
-    ) +
-    # Automatic adjustment of the number of columns according to the number of legend items
-    guides(fill = guide_legend(
-      ncol = ifelse(length(unique(data$type)) > 10, 2, 1),
-      byrow = TRUE
-    )) +
-    ggtern::theme_showarrows() +
-    ggtern::theme_showgrid()
-  return(p1)
+LHS_plot <- function(data,
+                     group = NULL,
+                     show_cube = TRUE,
+                     colors = c("#30123BFF", "#4777EFFF", "#1BD0D5FF", "#62FC6BFF",
+                                "#D2E935FF", "#FE9B2DFF", "#DB3A07FF", "#7A0403FF"),
+                     cube_angle = 60
+) {
+  # Check required columns
+  required_cols <- c("log_SLA", "log_Height", "log_SeedMass")
+  if (!all(required_cols %in% names(data))) {
+    missing_cols <- setdiff(required_cols, names(data))
+    stop(paste("Data is missing the following columns:", paste(missing_cols, collapse = ", ")))
+  }
+  # Check if group column exists
+  if (!is.null(group) && !group %in% names(data)) {
+    stop(paste("Group column", group, "not found in data"))
+  }
+  # Prepare data
+  x_label <- expression(log~"(SLA)")
+  y_label <- expression(log~"(Height)")
+  z_label <- expression(log~"(Seed mass)")
+  x_data <- data$log_SLA
+  y_data <- data$log_Height
+  z_data <- data$log_SeedMass
+  if (is.null(group)) {
+    plot_colors <- rep(colors[1], nrow(data))
+    show_legend <- FALSE
+  } else {
+    group_factor <- as.factor(data[[group]])
+    plot_colors <- colors[as.numeric(group_factor)]
+    show_legend <- TRUE
+  }
+  if (show_legend) {
+    # Set layout: main plot takes 80% width, legend takes 20% width
+    graphics::layout(matrix(c(1, 2), nrow = 1), widths = c(4, 1))
+    # Main plot area
+    graphics::par(mar = c(5, 3, 4, 1))
+  } else {
+    graphics::par(mar = c(5, 3, 4, 3))
+  }
+  # Create 3D scatter plot
+  s3d <- scatterplot3d::scatterplot3d(
+    x = x_data,
+    y = y_data,
+    z = z_data,
+    color = plot_colors,
+    pch = 21,
+    bg = plot_colors,
+    xlab = x_label,
+    ylab = y_label,
+    zlab = z_label,
+    type = "h",
+    axis = TRUE,
+    tick.marks = TRUE,
+    label.tick.marks = TRUE,
+    grid = TRUE,
+    box = show_cube,
+    angle = cube_angle,
+    cex.symbols = 1
+  )
+  # Add legend in separate area on the right
+  if (show_legend) {
+    graphics::par(mar = c(0, 0, 0, 0))
+    graphics::plot.new()
+    graphics::legend("left",
+                     legend = levels(group_factor),
+                     title = "Types",
+                     cex = 0.9,
+                     col = "black",
+                     pt.bg = colors[seq_along(levels(group_factor))],
+                     pch = 21,
+                     bty = "o",        # Add border ("o" means border is present)
+                     title.adj = 0,    # Title left-aligned
+                     title.font = 2,   # Title bold (1=normal, 2=bold, 3=italic, 4=bold italic)
+                     adj = 0)          # Legend text left-aligned
+
+    # Reset layout
+    graphics::layout(1)
+  }
+  return(invisible(s3d))
 }
