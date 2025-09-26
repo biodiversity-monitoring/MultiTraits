@@ -83,10 +83,15 @@ phylo_correlation <- function(traits_matrix, phylo_tree, method = "pearson") {
   # Ensure data and tree species order consistency
   species_order <- phylo_tree$tip.label
   # Check if all species in the tree are present in the trait matrix
-  missing_species <- setdiff(species_order, rownames(traits_matrix))
-  if (length(missing_species) > 0) {
+  missing_species1 <- setdiff(species_order, rownames(traits_matrix))
+  if (length(missing_species1) > 0) {
     cat("Warning: The following species are in the tree but not in the trait matrix:",
-        paste(missing_species, collapse = ", "), "\n")
+        paste(missing_species1, collapse = ", "), "\n")
+  }
+  missing_species2 <- setdiff(rownames(traits_matrix), species_order)
+  if (length(missing_species2) > 0) {
+    cat("Warning: The following species are in the trait matrix but not in the tree:",
+        paste(missing_species2, collapse = ", "), "\n")
   }
   # Only keep species that are present in both tree and trait matrix
   common_species <- intersect(species_order, rownames(traits_matrix))
@@ -146,3 +151,5 @@ phylo_correlation <- function(traits_matrix, phylo_tree, method = "pearson") {
   }
   return(list(r = r_matrix, P = p_matrix))
 }
+
+

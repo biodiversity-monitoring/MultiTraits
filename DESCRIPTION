@@ -17,7 +17,7 @@ Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.3.2
 Config/testthat/edition: 3
 NeedsCompilation: no
-Packaged: 2025-09-24 13:11:29 UTC; Administrator
+Packaged: 2025-09-26 11:41:15 UTC; Administrator
 Author: Yan He [aut, cre],
   Zhaogang Liu [aut],
   Jiangshan Lai [aut],
