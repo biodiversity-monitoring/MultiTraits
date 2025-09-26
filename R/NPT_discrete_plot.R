@@ -83,23 +83,20 @@
 #' \dontrun{
 #' # Load and prepare data
 #' data(PFF)
-#' PFF <- na.omit(PFF)
-#' PFF[,4:21] <- log(PFF[,4:21])
-#'
+#' rownames(PFF) <- PFF$species
+#' PFF_traits <- PFF[, c("SLA", "SRL", "Leaf_Nmass", "Root_Nmass","Height",
+#'                       "Leaf_CN", "Root_CN","SeedMass", "FltDate", "FltDur")]
+#' # Perform log transformation of data and remove missing values
+#' PFF_traits <- log(na.omit(PFF_traits))
+#' head(PFF_traits)
 #' # Define trait dimensions
-#' dimension <- list(
-#'   Grow = c("SLA", "SRL", "Leaf_Nmass", "Root_Nmass"),
-#'   Survive = c("Height", "Leaf_CN", "Root_CN"),
-#'   Reproductive = c("SeedMass", "FltDate", "FltDur")
-#' )
+#' dimension <- list(Grow = c("SLA", "SRL", "Leaf_Nmass", "Root_Nmass"),
+#'                   Survive = c("Height", "Leaf_CN", "Root_CN"),
+#'                   Reproductive = c("SeedMass", "FltDate", "FltDur"))
 #'
 #' set.seed(123)
-#'
-#' # Perform niche classification
-#' result <- NPT_discrete(PFF, dimension, species_col = "species")
-#'
-#' # Create basic tree visualization
-#' NPT_discrete_plot(result$niche_classification)
+#' discrete_result <- NPT_discrete(data = PFF_traits, dimension = dimension)
+#' NPT_discrete_plot(discrete_result$niche_classification)
 #'
 #' }
 #'

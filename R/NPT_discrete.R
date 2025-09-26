@@ -20,8 +20,6 @@
 #'   clustering. Default is \code{6}. This parameter is only used when
 #'   \code{clustering_method = "kmeans"}. The optimal k value will be selected using
 #'   the elbow method, constrained by this maximum value.
-#' @param species_col Character string specifying the column name that contains
-#'   species identifiers. Default is \code{"species"}.
 #'
 #' @return A list containing two elements:
 #'   \item{niche_classification}{A data frame with species names, cluster assignments
@@ -100,49 +98,46 @@
 #' \dontrun{
 #' # Load and prepare data
 #' data(PFF)
-#' PFF <- na.omit(PFF)            # Remove missing values
-#' PFF[,4:21] <- log(PFF[,4:21])  # Log-transform trait data
-#'
-#' # Define trait dimensions based on ecological strategies
-#' dimension <- list(
-#'   Grow = c("SLA", "SRL", "Leaf_Nmass", "Root_Nmass"),
-#'   Survive = c("Height", "Leaf_CN", "Root_CN"),
-#'   Reproductive = c("SeedMass", "FltDate", "FltDur")
-#' )
+#' rownames(PFF) <- PFF$species
+#' PFF_traits <- PFF[, c("SLA", "SRL", "Leaf_Nmass", "Root_Nmass","Height",
+#'                       "Leaf_CN", "Root_CN","SeedMass", "FltDate", "FltDur")]
+#' # Perform log transformation of data and remove missing values
+#' PFF_traits <- log(na.omit(PFF_traits))
+#' head(PFF_traits)
+#' # Define trait dimensions
+#' dimension <- list(Grow = c("SLA", "SRL", "Leaf_Nmass", "Root_Nmass"),
+#'                   Survive = c("Height", "Leaf_CN", "Root_CN"),
+#'                   Reproductive = c("SeedMass", "FltDate", "FltDur"))
 #'
 #' set.seed(123)
-#'
-#' # Create discrete niche classification using CART (default)
-#' result_cart <- NPT_discrete(PFF, dimension, species_col = "species")
-#'
-#' # View niche classification results
-#' head(result_cart$niche_classification)
-#' print(result_cart$summary)
-#'
-#' # Alternative using k-means clustering with default k_max = 6
-#' NPT_discrete(PFF, dimension, clustering_method = "kmeans", species_col = "species")
-#'
+#' discrete_result <- NPT_discrete(data = PFF_traits, dimension = dimension)
+#' head(discrete_result$niche_classification)
 #' }
 #'
 #' @export
 NPT_discrete <- function(data,
                          dimension,
                          clustering_method = "CART",
-                         k_max = 6,
-                         species_col = "species") {
+                         k_max = 6) {
   # Data validation
-  if (!species_col %in% names(data)) {
-    stop("Species column not found in data")
+  # Check if data is a dataframe and contains row names
+  if (!is.data.frame(data)) {
+    stop("Input data must be a dataframe.")
   }
+  if (is.null(rownames(data))) {
+    stop("Input data must contain row names as species identifiers.")
+  }
+
   # Check if trait columns exist
   all_traits <- unlist(dimension)
   missing_traits <- setdiff(all_traits, names(data))
   if (length(missing_traits) > 0) {
     stop("The following trait columns are missing from data: ", paste(missing_traits, collapse = ", "))
   }
+
   # Step 1: PCA analysis for each dimension
   pca_results <- list()
-  pc_scores <- data.frame(species = data[[species_col]])
+  pc_scores <- data.frame(species = rownames(data)) # Use row names as species identifiers
   cat("=== PCA Analysis Results ===\n")
   for(dim_name in names(dimension)) {
     # Extract trait data for current dimension
@@ -164,12 +159,14 @@ NPT_discrete <- function(data,
     cat("PC1 variance explained:", round(pc1_var, 2), "%\n")
     cat("PC2 variance explained:", round(pc2_var, 2), "%\n\n")
   }
+
   # Step 2: Clustering based on selected method
   dimension_clusters <- list()
   cat("=== ", clustering_method, " Clustering Results ===\n")
   for(dim_name in names(dimension)) {
     pc1_scores <- pc_scores[, paste0(dim_name, "_PC1")]
     pc2_scores <- pc_scores[, paste0(dim_name, "_PC2")]
+
     if(clustering_method == "CART") {
       # CART method
       predictor_data <- data[, dimension[[dim_name]]]
@@ -205,18 +202,21 @@ NPT_discrete <- function(data,
     }
     cat("Dimension", dim_name, "cluster count:", length(unique(dimension_clusters[[dim_name]])), "\n")
   }
+
   # Step 3: Construct hierarchical discrete niche classification
-  niche_classification <- data.frame(species = data[[species_col]])
+  niche_classification <- data.frame(species = rownames(data))  # Use row names as species identifiers
   # Add clustering results for each dimension
   for(dim_name in names(dimension)) {
     niche_classification[[dim_name]] <- dimension_clusters[[dim_name]]
   }
+
   # Generate comprehensive niche category codes
   cluster_cols <- names(dimension)
   niche_codes <- apply(niche_classification[, cluster_cols], 1, function(x) {
     paste(x, collapse = ",")
   })
   niche_classification$niche_code <- niche_codes
+
   # Calculate occupied and potential niche counts
   total_potential_niches <- prod(sapply(dimension_clusters, function(x) length(unique(x))))
   occupied_niches <- length(unique(niche_codes))
@@ -235,6 +235,7 @@ NPT_discrete <- function(data,
     order_index <- do.call(order, as.data.frame(niche_matrix))
     return(order_index)
   }
+
   niche_summary <- niche_classification %>%
     dplyr::group_by(.data$niche_code) %>%
     dplyr::summarise(species_count = n(),
@@ -243,6 +244,7 @@ NPT_discrete <- function(data,
   # Sort by niche_code numeric order
   sort_index <- sort_niche_code(niche_summary$niche_code)
   niche_summary <- niche_summary[sort_index, ]
+
   # Return results list
   result <- list(niche_classification = niche_classification, summary = niche_summary)
   return(result)

@@ -4,13 +4,7 @@
 \alias{NPT_discrete}
 \title{Discrete Niche Classification Based on Periodic Table of Niches}
 \usage{
-NPT_discrete(
-  data,
-  dimension,
-  clustering_method = "CART",
-  k_max = 6,
-  species_col = "species"
-)
+NPT_discrete(data, dimension, clustering_method = "CART", k_max = 6)
 }
 \arguments{
 \item{data}{A data frame containing species and their functional trait measurements.
@@ -31,9 +25,6 @@ Options are:
 clustering. Default is \code{6}. This parameter is only used when
 \code{clustering_method = "kmeans"}. The optimal k value will be selected using
 the elbow method, constrained by this maximum value.}
-
-\item{species_col}{Character string specifying the column name that contains
-species identifiers. Default is \code{"species"}.}
 }
 \value{
 A list containing two elements:
@@ -101,28 +92,20 @@ also differ slightly if predictor splitting involves tie-breaking.
 \dontrun{
 # Load and prepare data
 data(PFF)
-PFF <- na.omit(PFF)            # Remove missing values
-PFF[,4:21] <- log(PFF[,4:21])  # Log-transform trait data
-
-# Define trait dimensions based on ecological strategies
-dimension <- list(
-  Grow = c("SLA", "SRL", "Leaf_Nmass", "Root_Nmass"),
-  Survive = c("Height", "Leaf_CN", "Root_CN"),
-  Reproductive = c("SeedMass", "FltDate", "FltDur")
-)
+rownames(PFF) <- PFF$species
+PFF_traits <- PFF[, c("SLA", "SRL", "Leaf_Nmass", "Root_Nmass","Height",
+                      "Leaf_CN", "Root_CN","SeedMass", "FltDate", "FltDur")]
+# Perform log transformation of data and remove missing values
+PFF_traits <- log(na.omit(PFF_traits))
+head(PFF_traits)
+# Define trait dimensions
+dimension <- list(Grow = c("SLA", "SRL", "Leaf_Nmass", "Root_Nmass"),
+                  Survive = c("Height", "Leaf_CN", "Root_CN"),
+                  Reproductive = c("SeedMass", "FltDate", "FltDur"))
 
 set.seed(123)
-
-# Create discrete niche classification using CART (default)
-result_cart <- NPT_discrete(PFF, dimension, species_col = "species")
-
-# View niche classification results
-head(result_cart$niche_classification)
-print(result_cart$summary)
-
-# Alternative using k-means clustering with default k_max = 6
-NPT_discrete(PFF, dimension, clustering_method = "kmeans", species_col = "species")
-
+discrete_result <- NPT_discrete(data = PFF_traits, dimension = dimension)
+head(discrete_result$niche_classification)
 }
 
 }
