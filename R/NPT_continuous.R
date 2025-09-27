@@ -37,7 +37,7 @@
 #' ensures that all niche dimensions have an equal opportunity to influence the
 #' composite niche scheme and species ordinations. For each dimension, the function:
 #' \itemize{
-#'   \item Performs PCA using \code{vegan::rda()} with scaling = FALSE
+#'   \item Performs PCA using \code{vegan::rda()}
 #'   \item Calculates variance explained by the first two principal components
 #'   \item Identifies traits with highest absolute loadings on PC1 and PC2
 #'   \item Extracts species scores on both principal components
@@ -99,7 +99,7 @@ NPT_continuous <- function(data, dimension) {
     message(paste("Removed", removed_rows, "rows containing NA values."))
   }
   pca_first <- function(data) {
-    pca_result <- vegan::rda(data, scale = FALSE)
+    pca_result <- vegan::rda(data)
     var_explained <- summary(pca_result)$cont$importance[2, ]
     pc1_percent <- var_explained[1] * 100
     pc2_percent <- var_explained[2] * 100

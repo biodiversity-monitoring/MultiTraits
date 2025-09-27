@@ -47,7 +47,7 @@ dimension using the internal \code{pca_first} function. This dimensional approac
 ensures that all niche dimensions have an equal opportunity to influence the
 composite niche scheme and species ordinations. For each dimension, the function:
 \itemize{
-\item Performs PCA using \code{vegan::rda()} with scaling = FALSE
+\item Performs PCA using \code{vegan::rda()}
 \item Calculates variance explained by the first two principal components
 \item Identifies traits with highest absolute loadings on PC1 and PC2
 \item Extracts species scores on both principal components

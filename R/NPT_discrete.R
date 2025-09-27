@@ -143,7 +143,7 @@ NPT_discrete <- function(data,
     # Extract trait data for current dimension
     traits_data <- data[, dimension[[dim_name]]]
     # Perform PCA analysis using vegan package
-    pca <- vegan::rda(traits_data, scale = TRUE)
+    pca <- vegan::rda(traits_data)
     pca_results[[dim_name]] <- pca
     # Get sample scores
     site_scores <- vegan::scores(pca, display = "sites", choices = 1:2)
