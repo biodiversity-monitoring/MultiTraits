@@ -12,10 +12,10 @@
 #'
 #'
 #' @references
-#' 1. Westoby, M. (1998). A leaf-height-seed (LHS) plant ecology strategy scheme. Plant and Soil, 199, 213–227.
-#' \url{https://doi.org/10.1023/A:1004327224729}
-#' 2. Yang, J., Wang, Z., Zheng, Y., & Pan, Y. (2022). Shifts in plant ecological strategies in remnant forest patches along urbanization gradients. Forest Ecology and Management, 524, 120540.
-#' \url{https://doi.org/10.1016/j.foreco.2022.120540}
+#' 1. Westoby, M. (1998). A leaf-height-seed (LHS) plant ecology strategy scheme.
+#' Plant and Soil, 199, 213–227.
+#' 2. Yang, J., Wang, Z., Zheng, Y., & Pan, Y. (2022). Shifts in plant ecological strategies
+#' in remnant forest patches along urbanization gradients. Forest Ecology and Management, 524, 120540.
 #'
 #' @examples
 #' LHS_strategy_scheme()

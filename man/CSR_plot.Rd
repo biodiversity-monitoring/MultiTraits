@@ -8,7 +8,6 @@ CSR_plot(
   data,
   point_size = 3,
   point_shape = 21,
-  expand_margin = 1,
   custom_colors = c(C = "#E60D0D", `C/CR` = "#BA0D3B", `C/CS` = "#BA3B0D", CR =
     "#7A0D7A", `C/CSR` = "#8A3B3B", CS = "#7A7A0D", `CR/CSR` = "#6B2B6B", `CS/CSR` =
     "#6B6B2B", `R/CR` = "#3B0DBA", CSR = "#545454", `S/CS` = "#3BBA0D", `R/CSR` =
@@ -31,9 +30,6 @@ Default is 3.}
 \item{point_shape}{Numeric value specifying the shape of points in the plot.
 Default is 21 (filled circle with border).}
 
-\item{expand_margin}{Numeric value to expand the plot margins beyond the
-ternary triangle boundaries. Default is 1.}
-
 \item{custom_colors}{Named character vector specifying custom colors for each
 CSR strategy type. Default includes 19 predefined colors for all possible
 CSR combinations.}
@@ -50,8 +46,8 @@ A ggplot object representing a ternary plot with:
 \description{
 This function creates a ternary plot to visualize plant ecological strategies
 based on the CSR (Competitor-Stress tolerator-Ruderal) framework developed by
-Grime (1974). The plot displays the relative proportions of C, S, and R
-strategies for each species or sample.
+Grime (1974). The plot is built using \code{ggplot2} and displays the relative
+proportions of C, S, and R strategies for each species or sample.
 }
 \details{
 The CSR strategy framework classifies plants into three primary functional
@@ -83,10 +79,11 @@ CSR_plot(data=result)
 Allocating CSR plant functional types: a soft approach to a hard problem. Oikos, 85, 282–294.
 \item Caccianiga, M., Luzzaro, A., Pierce, S., Ceriani, R.M. & Cerabolini, B. (2006).
 The functional basis of a primary succession resolved by CSR classification. Oikos, 112, 10–20.
-\item Pierce, S., Negreiros, D., Cerabolini, B.E.L., Kattge, J., Díaz, S., et al. (2017). A global method for calculating plant CSR ecological strategies applied across biomes world-wide. Functional Ecology, 31: 444-457.
-\url{https://doi.org/10.1111/1365-2435.12722}
+\item Pierce, S., Negreiros, D., Cerabolini, B.E.L., Kattge, J., Díaz, S., et al. (2017).
+A global method for calculating plant CSR ecological strategies applied across biomes world-wide.
+Functional Ecology, 31: 444-457.
 }
 }
 \seealso{
-\code{\link{CSR}} or \code{\link{CSR_hodgson}}for calculating CSR strategies from plant functional traits
+\code{\link{CSR}} or \code{\link{CSR_hodgson}} for calculating CSR strategies from plant functional traits
 }

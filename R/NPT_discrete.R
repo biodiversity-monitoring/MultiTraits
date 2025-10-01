@@ -88,11 +88,9 @@
 #' 1. Winemiller, K. O., Fitzgerald, D. B., Bower, L. M., & Pianka, E. R. (2015).
 #'    Functional traits, convergent evolution, and periodic tables of niches.
 #'    Ecology letters, 18(8), 737-751.
-#'    \url{https://doi.org/10.1111/ele.12462}
 #' 2. Pianka, E. R., Vitt, L. J., Pelegrin, N., Fitzgerald, D. B., & Winemiller, K. O. (2017).
 #'    Toward a periodic table of niches, or exploring the lizard niche hypervolume.
 #'    The American Naturalist, 190(5), 601-616.
-#'    \url{https://doi.org/10.1086/693781}
 #'
 #' @examples
 #' \dontrun{

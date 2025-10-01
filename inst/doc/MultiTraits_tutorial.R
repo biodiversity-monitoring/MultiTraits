@@ -31,7 +31,7 @@ csr_result <- CSR(csr_traits)
 head(csr_result)
 
 # Create the CSR plot
-CSR_plot(csr_result, expand_margin = 1.05)
+CSR_plot(csr_result)
 
 ## ----class.source = 'fold-show'-----------------------------------------------
 # Load packages

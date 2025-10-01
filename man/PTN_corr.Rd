@@ -84,9 +84,7 @@ PTN_corr(traits_matrix = PFF_traits, rThres = 0.2, pThres = 0.05, method = "pear
 \item Felsenstein, J. (1985). Phylogenies and the comparative method. The American Naturalist, 125(1), 1-15.
 \item He, N., Li, Y., Liu, C., et al. (2020). Plant trait networks: improved resolution of the dimensionality of adaptation.
 Trends in Ecology & Evolution, 35(10), 908-918.
-\url{https://doi.org/10.1016/j.tree.2020.06.003}
 \item Li, Y., Liu, C., Sack, L., Xu, L., Li, M., Zhang, J., & He, N. (2022). Leaf trait network architecture shifts with
 species‐richness and climate across forests at continental scale. Ecology Letters, 25(6), 1442-1457.
-\url{https://doi.org/10.1111/ele.14009}
 }
 }

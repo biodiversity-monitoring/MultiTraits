@@ -94,9 +94,9 @@ result
 }
 \references{
 \enumerate{
-\item Winemiller, K. O., Fitzgerald, D. B., Bower, L. M., & Pianka, E. R. (2015). Functional traits, convergent evolution, and periodic tables of niches. Ecology letters, 18(8), 737-751.
-\url{https://doi.org/10.1111/ele.12462}
-\item Yu, R., Huang, J., Xu, Y., Ding, Y., & Zang, R. (2020). Plant functional niches in forests across four climatic zones: Exploring the periodic table of niches based on plant functional traits. Frontiers in Plant Science, 11, 841.
-\url{https://doi.org/10.3389/fpls.2020.00841}
+\item Winemiller, K. O., Fitzgerald, D. B., Bower, L. M., & Pianka, E. R. (2015). Functional traits,
+convergent evolution, and periodic tables of niches. Ecology letters, 18(8), 737-751.
+\item Yu, R., Huang, J., Xu, Y., Ding, Y., & Zang, R. (2020). Plant functional niches in forests across four climatic zones:
+Exploring the periodic table of niches based on plant functional traits. Frontiers in Plant Science, 11, 841.
 }
 }

@@ -24,10 +24,8 @@
 #' @references
 #' 1. He, N., Li, Y., Liu, C., et al. (2020). Plant trait networks: improved resolution of the dimensionality of adaptation.
 #' Trends in Ecology & Evolution, 35(10), 908-918.
-#' \url{https://doi.org/10.1016/j.tree.2020.06.003}
 #' 2. Li, Y., Liu, C., Sack, L., Xu, L., Li, M., Zhang, J., & He, N. (2022). Leaf trait network architecture shifts with
 #' species‐richness and climate across forests at continental scale. Ecology Letters, 25(6), 1442-1457.
-#' \url{https://doi.org/10.1111/ele.14009}
 #'
 #' @examples
 #' data(PFF)

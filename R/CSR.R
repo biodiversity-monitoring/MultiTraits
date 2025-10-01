@@ -57,8 +57,9 @@
 #'
 #' @references
 #' 1. Grime, J.P. (1974). Vegetation classification by reference to strategies. Nature, 250, 26–31.
-#' 2. Pierce, S., Negreiros, D., Cerabolini, B.E.L., Kattge, J., Díaz, S., et al. (2017). A global method for calculating plant CSR ecological strategies applied across biomes world-wide. Functional Ecology, 31: 444-457.
-#' \url{https://doi.org/10.1111/1365-2435.12722}
+#' 2. Pierce, S., Negreiros, D., Cerabolini, B.E.L., Kattge, J., Díaz, S., et al. (2017). A global method
+#' for calculating plant CSR ecological strategies applied across biomes world-wide.
+#' Functional Ecology, 31: 444-457.
 #'
 #' @export
 CSR <- function(data) {

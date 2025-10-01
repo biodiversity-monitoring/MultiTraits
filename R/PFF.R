@@ -41,7 +41,7 @@
 #' @source
 #' Laughlin, D. C., Leppert, J. J., Moore, M. M., & Sieg, C. H. (2010). A multi-trait test
 #' of the leaf-height-seed plant strategy scheme with 133 species from a pine forest flora.
-#' Functional Ecology, 24(3), 485-700. \url{https://doi.org/10.1111/j.1365-2435.2009.01672.x}
+#' Functional Ecology, 24(3), 485-700.
 #'
 #' @examples
 #' data(PFF)
