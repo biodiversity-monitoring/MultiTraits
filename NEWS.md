@@ -1,8 +1,16 @@
+# MultiTraits 0.6.0 (2025-10-01)
 
-# MultiTraits 0.6.0 (2025-9)
+## New Features and Major Improvements
 
+*   **PTN Module (Plant Trait Network)**: Functions in the trait network module have been renamed from the `TN_` prefix to `PTN_` for consistency (e.g., `PTN()`, `PTN_metrics()`). Functionality for phylogenetic correction has been added, allowing `PTN()` and `PTN_corr()` to account for species' evolutionary relatedness during analysis.
 
+*   **CSR Module**: The module has been expanded with the `CSR_hodgson()` function, implementing an alternative CSR classification method based on Hodgson et al. (1999).
 
+*   **NPT Module**: A discrete classification scheme has been added to the Niche Periodic Table module.
+
+*   **Data**: A new phylogenetic tree for the PFF dataset (`PFF_tree`) has been included to support the new phylogenetic correction capabilities.
+
+*   Other minor improvements and documentation enhancements have been made across the package.
 
 
 
