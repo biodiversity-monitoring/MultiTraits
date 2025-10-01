@@ -79,6 +79,10 @@ CSR_plot(data=result)
 \references{
 \enumerate{
 \item Grime, J.P. (1974). Vegetation classification by reference to strategies. Nature, 250, 26–31.
+\item Hodgson, J.G., Wilson, P.J., Hunt, R., Grime, J.P. & Thompson, K. (1999).
+Allocating CSR plant functional types: a soft approach to a hard problem. Oikos, 85, 282–294.
+\item Caccianiga, M., Luzzaro, A., Pierce, S., Ceriani, R.M. & Cerabolini, B. (2006).
+The functional basis of a primary succession resolved by CSR classification. Oikos, 112, 10–20.
 \item Pierce, S., Negreiros, D., Cerabolini, B.E.L., Kattge, J., Díaz, S., et al. (2017). A global method for calculating plant CSR ecological strategies applied across biomes world-wide. Functional Ecology, 31: 444-457.
 \url{https://doi.org/10.1111/1365-2435.12722}
 }

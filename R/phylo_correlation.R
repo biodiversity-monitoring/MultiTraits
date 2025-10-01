@@ -151,5 +151,3 @@ phylo_correlation <- function(traits_matrix, phylo_tree, method = "pearson") {
   }
   return(list(r = r_matrix, P = p_matrix))
 }
-
-

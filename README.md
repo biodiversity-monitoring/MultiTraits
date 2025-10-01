@@ -1,6 +1,6 @@
 # MultiTraits<img src="man/figures/LOGO.jpg" alt="MultiTraits logo" align="right" width="120"/>
 
-MultiTraits is a comprehensive R package designed for advanced analysis and visualisation of multidimensional plant traits. It provides a standardised workflow and intuitive visualisation tools, streamlining the exploration of complex trait relationships for researchers, educators, and students. The package integrates four key analytical modules: Competitors-Stress tolerators-Ruderals (CSR) strategy analysis, Leaf-Height-Seed (LHS) strategy analysis, Niche Periodic Table (NPT) analysis, and Plant Trait Network (PTN) analysis. These modules offer complementary perspectives, promoting a more comprehensive understanding of multidimensional trait variation patterns in plants. This tutorial aims to guide users through the core functionalities and practical applications of the MultiTraits package. Through practical demonstrations, we illustrate how these analytical modules can be utilized to explore multidimensional relationships among plant traits, including key steps in data preparation, analysis workflows, and result visualization.
+MultiTraits is a comprehensive R package designed for advanced analysis and visualization of multidimensional plant traits. It provides a standardized workflow and intuitive visualization tools, streamlining the exploration of complex trait relationships for researchers, educators, and students. The package integrates four key analytical modules: Competitors–Stress Tolerators–Ruderals (CSR) strategy analysis, Leaf–Height–Seed (LHS) strategy analysis, Niche Periodic Table (NPT) analysis, and Plant Trait Network (PTN) analysis. These modules offer complementary perspectives, fostering a more comprehensive understanding of multidimensional trait variation patterns in plants. This tutorial aims to guide users through the core functionalities and practical applications of the MultiTraits package. Through hands-on demonstrations, we show how these analytical modules can be used to explore multidimensional relationships among plant traits, including essential steps in data preparation, analysis workflows, and results visualization.
 
 ![](man/figures/1.jpg)
 
@@ -25,7 +25,7 @@ MultiTraits is a comprehensive R package designed for advanced analysis and visu
 |----------------|----------------|-----------------------------------------|
 | **CSR Module** | `CSR()`                 | Classifies plant species' CSR ecological strategies based on leaf traits (LA, LDMC, and SLA) using the Pierce et al. (2017) method.   |
 |                | `CSR_hodgson()`         | Implements the Hodgson et al. (1999) method for CSR classification.                                                                   |
-|                | `CSR_plot()`            | Provides advanced ternary plot visualizations for CSR analysis, to explore plant adaptation to different environments.                |
+|                | `CSR_plot()`            | Provides advanced ternary plot visualizations for CSR analysis to explore plant adaptation to different environments.                |
 | **LHS Module** | `LHS()`                 | Analyzes LHS strategies using SLA, plant height, and seed mass.                                                                       |
 |                | `LHS_plot()`            | Visualizes three-dimensional trait distributions in LHS space.                                                                        |
 |                | `LHS_strategy_scheme()` | Classifies strategies based on the LHS scheme.                                                                                        |
@@ -59,37 +59,37 @@ LDMC: Leaf dry matter content (%)
 
 SLA: Specific leaf area (mm²/mg)
 
-SRL: Specific root length
+SRL: Specific root length (m/g)
 
-SeedMass: Seed mass
+SeedMass: Seed mass (mg)
 
-FltDate: Flowering date
+FltDate: Mean flowering date (Julian day)
 
-FltDur: Flowering duration
+FltDur: Mean flowering duration (days)
 
-k_value: Decomposition rate
+k_value: Decomposition decay constant, where proportion of original mass remaining = exp(- k-value*0.926)
 
-Leaf_Cmass: Leaf carbon content
+Leaf_Cmass: Leaf carbon content (%)
 
-Leaf_Nmass: Leaf nitrogen content
+Leaf_Nmass: Leaf nitrogen content (%)
 
 Leaf_CN: Leaf carbon/nitrogen ratio
 
-Leaf_Pmass: Leaf phosphorus content
+Leaf_Pmass: Leaf phosphorus content (%)
 
 Leaf_NP: Leaf nitrogen/phosphorus ratio
 
 Leaf_CP: Leaf carbon/phosphorus ratio
 
-Root_Cmass: Root carbon content
+Root_Cmass: Root carbon content (%)
 
-Root_Nmass: Root nitrogen content
+Root_Nmass: Root nitrogen content (%)
 
 Root_CN: Root carbon/nitrogen ratio
 
 ### CSR Strategy
 
-The CSR (Competitor-Stress-Tolerator-Ruderal) strategy, initially conceptualised by Grime (1974), classifies plants based on their ecological strategies, which are influenced by environmental factors like competition, stress, and disturbance. The MultiTraits package offers two approaches for CSR analysis: the Hodgson et al. (1999) method and the Pierce et al. (2017) method. The Pierce method, used here, utilises leaf area (LA), leaf dry matter content (LDMC), and specific leaf area (SLA) to classify species. The CSR_plot() function visualises the results in a ternary plot, showing species' positions based on their relative C, S, and R strategy proportions. This aids in understanding plant functional classification and predicting responses to environmental changes.
+The CSR (Competitor–Stress-Tolerator–Ruderal) strategy, initially conceptualized by Grime (1974), classifies plants based on their ecological strategies, which are influenced by environmental factors such as competition, stress, and disturbance. The MultiTraits package offers two approaches for CSR analysis: the method proposed by Hodgson et al. (1999) and the method developed by Pierce et al. (2017). The Pierce method, used here, employs leaf area (LA), leaf dry matter content (LDMC), and specific leaf area (SLA) to classify species. The CSR_plot() function visualizes the results in a ternary plot, showing species’ positions based on their relative C, S, and R strategy proportions. This aids in understanding plant functional classification and predicting responses to environmental changes.
 
 ```{r,class.source = 'fold-show'}
 # Load packages
@@ -115,7 +115,7 @@ CSR_plot(csr_result, expand_margin = 1.05)
 
 ### LHS Strategy
 
-The Leaf-Height-Seed (LHS) scheme, proposed by Westoby (1998), classifies plant species based on specific leaf area (SLA), canopy height at maturity, and seed mass. These three traits reflect trade-offs in resource acquisition, spatial occupation, and reproductive investment. The MultiTraits package implements the LHS scheme by positioning species in a three-dimensional trait space using log-transformed trait values. This continuous space is then divided into eight discrete strategy types (e.g., S-S-S, L-L-L) based on median trait values, reflecting different trade-offs in growth, competition, and survival. The LHS_plot() function visualises these strategies in 3D space, while LHS_strategy_scheme() provides a key for interpreting the strategy types.
+The Leaf–Height–Seed (LHS) scheme, proposed by Westoby (1998), classifies plant species based on specific leaf area (SLA), canopy height at maturity, and seed mass. These three traits reflect trade-offs in resource acquisition, spatial occupation, and reproductive investment. The MultiTraits package implements the LHS scheme by positioning species in a three-dimensional trait space using log-transformed trait values. This continuous space is then divided into eight discrete strategy types (e.g., S–S–S, L–L–L) based on median trait values, representing different trade-offs in growth, competition, and survival. The LHS_plot() function visualizes these strategies in 3D space, while LHS_strategy_scheme() provides a reference key for interpreting the strategy types.
 
 ```{r,class.source = 'fold-show'}
 # Load packages
@@ -146,7 +146,7 @@ LHS_strategy_scheme()
 
 ### Niche Periodicity Table
 
-The Niche Periodic Table (NPT) framework systematically describes and predicts species functions by identifying recurring trait combinations, driven by convergent evolution. Within the MultiTraits R package, the NPT module offers both discrete and continuous classification schemes. The NPT_discrete() function categorises species into distinct niche groups using PCA and clustering, with NPT_discrete_plot() visualising these results. For continuous classification, NPT_continuous() performs hierarchical PCA to create a two-dimensional ordination space, while NPT_continuous_plot() visualises these integrated niche patterns.
+The Niche Periodic Table (NPT) framework systematically describes and predicts species functions by identifying recurring trait combinations driven by convergent evolution. Within the MultiTraits R package, the NPT module offers both discrete and continuous classification schemes. The NPT_discrete() function categorizes species into distinct niche groups using PCA and clustering, with NPT_discrete_plot() visualizing the results. For continuous classification, NPT_continuous() performs hierarchical PCA to create a two-dimensional ordination space, while NPT_continuous_plot() visualizes these integrated niche patterns.
 
 ```{r,class.source = 'fold-show'}
 # Load packages
@@ -183,7 +183,7 @@ NPT_continuous_plot(continuous_result$result)
 
 ### Plant Trait Network
 
-Plant Trait Networks (PTNs) provide a framework for understanding complex interdependencies among plant traits by treating traits as nodes and their associations as edges in a network. The PTN module, implemented as described by He et al. (2020), offers functions to calculate correlations (PTN_corr()), generate networks (PTN()), quantify network metrics (PTN_metrics()), and visualise networks (PTN_plot()). The package supports phylogenetic correction to account for species' shared evolutionary history. Significant correlations are selected based on thresholds, and network metrics, including node- and network-level parameters, are used to analyse trait interdependence.
+Plant Trait Networks (PTNs) provide a framework for understanding complex interdependencies among plant traits by treating traits as nodes and their associations as edges within a network. The PTN module, implemented as described by He et al. (2020), offers functions to calculate correlations (PTN_corr()), generate networks (PTN()), quantify network metrics (PTN_metrics()), and visualize networks (PTN_plot()). The package supports phylogenetic correction to account for species’ shared evolutionary history. Significant correlations are selected based on defined thresholds, and network metrics, including both node-level and network-level parameters, are used to analyze trait interdependence.
 
 ```{r,class.source = 'fold-show'}
 # Load packages

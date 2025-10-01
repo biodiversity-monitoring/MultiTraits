@@ -16,9 +16,9 @@ A data frame with 137 rows and 21 variables:
 \item{SLA}{Specific leaf area (mm^2/mg)}
 \item{SRL}{Specific root length (m/g)}
 \item{SeedMass}{Seed mass (mg)}
-\item{FltDate}{mean Flowering date (Julian day)}
-\item{FltDur}{mean Flowering duration (days)}
-\item{k_value}{decomposition decay constant, where proportion of original mass remaining = exp(- k-value*0.926)}
+\item{FltDate}{Mean flowering date (Julian day)}
+\item{FltDur}{Mean flowering duration (days)}
+\item{k_value}{Decomposition decay constant, where proportion of original mass remaining = exp(- k-value*0.926)}
 \item{Leaf_Cmass}{Leaf carbon content (\% dry mass)}
 \item{Leaf_Nmass}{Leaf nitrogen content (\% dry mass)}
 \item{Leaf_CN}{Leaf carbon to nitrogen ratio}

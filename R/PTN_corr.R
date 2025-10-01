@@ -72,7 +72,7 @@
 #'
 #' data(PFF_tree)
 #' PTN_corr(traits_matrix = PFF_traits, rThres = 0.2, pThres = 0.05, method = "pearson",
-#'         phylo_correction = TRUE,phylo_tree = PFF_tree)
+#'         phylo_correction = TRUE, phylo_tree = PFF_tree)
 #'
 #' @export
 PTN_corr <- function(traits_matrix, rThres = 0.2, pThres = 0.05, method = "pearson",

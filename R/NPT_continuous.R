@@ -80,8 +80,8 @@
 #' data(PFF)
 #' PFF[,4:21] <- log(PFF[,4:21])
 #' traits_dimension <- list(
-#'   grow = c("SLA","Leaf_area","LDMC","SRL","Leaf_Nmass","Leaf_Pmass","Root_Nmass"),
-#'   survive = c("Height","Leaf_Cmass","Root_Cmass","Leaf_CN","Leaf_NP","Leaf_CP","Root_CN"),
+#'   grow = c("SLA","SRL","Leaf_Nmass","Root_Nmass"),
+#'   survive = c("Height","Leaf_CN","Root_CN"),
 #'   reproductive = c("SeedMass","FltDate","FltDur")
 #' )
 #' result <- NPT_continuous(data = PFF, dimension = traits_dimension)

@@ -44,14 +44,11 @@
 #' are present, the function will stop with an error.
 #'
 #' @references
-#' \enumerate{
-#'   \item Hodgson, J.G., Wilson, P.J., Hunt, R., Grime, J.P. & Thompson, K. (1999).
-#' Allocating CSR plant functional types: a soft approach to a hard problem.
-#' \emph{Oikos}, 85, 282–294.
-#'   \item Caccianiga, M., Luzzaro, A., Pierce, S., Ceriani, R.M. & Cerabolini, B. (2006).
-#' The functional basis of a primary succession resolved by CSR classification.
-#' \emph{Oikos}, 112, 10–20.
-#' }
+#' 1. Hodgson, J.G., Wilson, P.J., Hunt, R., Grime, J.P. & Thompson, K. (1999).
+#' Allocating CSR plant functional types: a soft approach to a hard problem. Oikos, 85, 282–294.
+#' 2. Caccianiga, M., Luzzaro, A., Pierce, S., Ceriani, R.M. & Cerabolini, B. (2006).
+#' The functional basis of a primary succession resolved by CSR classification. Oikos, 112, 10–20.
+#'
 #'
 #' @examples
 #' # Example trait dataset
