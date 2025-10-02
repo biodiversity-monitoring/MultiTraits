@@ -9,7 +9,7 @@ LHS(data)
 \arguments{
 \item{data}{A data frame containing plant trait data with the following required columns:
 \describe{
-\item{SLA}{Specific leaf area (area per unit dry mass, typically mm²/mg or m²/kg)}
+\item{SLA}{Specific leaf area (area per unit dry mass, typically mm2/mg or m2/kg)}
 \item{Height}{Canopy height at maturity (typically in metres)}
 \item{SeedMass}{Seed mass (typically in mg or g)}
 }

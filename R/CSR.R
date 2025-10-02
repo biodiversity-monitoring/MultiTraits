@@ -28,7 +28,7 @@
 #' \enumerate{
 #'   \item Transforms the three input traits using species-specific equations
 #'   \item Calculates derived traits including leaf dry weight, fresh weight, and succulence index
-#'   \item Adjusts LDMC for succulent species (>5 g dm⁻²)
+#'   \item Adjusts LDMC for succulent species (>5 g dm-2)
 #'   \item Projects traits onto principal component axes from a global calibration dataset
 #'   \item Applies outlier corrections to keep values within calibrated ranges
 #'   \item Converts to proportional CSR values that sum to 100%

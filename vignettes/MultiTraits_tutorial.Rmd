@@ -66,11 +66,11 @@ The PFF dataset contains trait measurements for plant species found in pine fore
 
 Height: Maximum plant height (cm)
 
-Leaf_area: Leaf area (mm²)
+Leaf_area: Leaf area (mm2)
 
 LDMC: Leaf dry matter content (%)
 
-SLA: Specific leaf area (mm²/mg)
+SLA: Specific leaf area (mm2/mg)
 
 SRL: Specific root length (m/g)
 
