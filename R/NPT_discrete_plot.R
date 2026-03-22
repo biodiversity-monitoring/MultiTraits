@@ -201,8 +201,8 @@ NPT_discrete_plot <- function(data, point_size = 2.5) {
     ggraph::geom_node_text(ggplot2::aes(label = .data$label), size = 3, hjust = 0.5, vjust = 2) +
     ggplot2::scale_fill_manual(values = color_mapping, breaks = level_order) +
     ggplot2::scale_size_identity() +
-    ggraph::theme_graph() +
-    ggplot2::theme(legend.position = "bottom", text = ggplot2::element_text(family = "sans")) +
+    ggraph::theme_graph(base_family = "") +
+    ggplot2::theme(legend.position = "bottom") +
     ggplot2::labs(fill = "Niche Level") +
     ggplot2::guides(fill = ggplot2::guide_legend(override.aes = list(size = point_size)))
   return(p)
