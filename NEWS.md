@@ -1,3 +1,17 @@
+# MultiTraits 1.0.0 (2026-3-22)
+
+## New Features and Major Improvements
+
+-   **PTMN Module (Plant Trait Multilayer Networks)**: Introduced a comprehensive new module for constructing, analyzing, and visualizing plant trait multilayer networks. This module systematically integrates multilayer network theory with plant functional trait analysis and includes three core functions:
+
+    -   **PTMN()**: Constructs phylogenetic trait multilayer networks where nodes represent traits organized into layers (e.g., organs or functional systems) and edges represent significant correlations. It supports correlation thresholding, p-value filtering, FDR correction, and optional phylogenetic correction using independent contrasts.
+    -   **PTMN_metrics()**: Calculates node-level and global network metrics for PTMNs, identifying hub traits and cross-layer modules. Included metrics are interlayer degree, closeness, clustering coefficient, edge density, path length, and modular association.
+    -   **PTMN_plot()**: Visualizes PTMNs with options for standard and circular layouts, customizable node and edge aesthetics, and layer/module highlighting. It clearly differentiates intralayer edges (black) from interlayer edges (red).
+
+## Bug fixes
+
+-   **LHS_strategy_scheme()**: Corrected an error in the strategy description mapping. The trait sequence was previously misinterpreted as a Leaf-Seed-Height order. The text descriptions in the strategy column have now been fixed to accurately reflect the standard Leaf-Height-Seed (L-H-S) framework.
+
 # MultiTraits 0.6.0 (2025-10-01)
 
 ## New Features and Major Improvements

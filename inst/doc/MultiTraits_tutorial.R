@@ -121,3 +121,48 @@ set.seed(22)
 # Create visualization plots of the trait network
 PTN_plot(PTN_phylo_result, style = 1, vertex.size = 20, vertex.label.cex = 0.6)
 
+## ----class.source = 'fold-show'-----------------------------------------------
+# Load packages
+library(MultiTraits)
+
+# Load and prepare data
+data(forest_invader_traits)
+traits <- forest_invader_traits[, 6:73]
+
+# Define the layers, grouping traits by organ or functional system
+layers <- list(
+  shoot_dynamics = c("LeafDuration", "LeafFall50", "LeafRate_max",
+                     "Chl_shade50", "LAgain", "FallDuration",
+                     "LeafOut", "Chl_sun50", "EmergeDuration",
+                     "LeafTurnover"),
+  leaf_structure = c("PA_leaf", "Mass_leaf", "Lifespan_leaf",
+                     "Thick_leaf", "SLA", "Lobe", "LDMC",
+                     "Stomate_size", "Stomate_index"),
+  leaf_metabolism = c("J_max", "Vc_max", "Asat_area", "CC_mass",
+                      "LSP", "AQY", "CC_area", "Rd_area",
+                      "Asat_mass", "WUE", "Rd_mass", "PNUE"),
+  leaf_chemistry = c("N_area", "Chl_area", "DNA", "Phenolics",
+                     "Cellulose", "N_mass", "N_litter", "Chl_ab",
+                     "Chl_mass", "N_res", "C_litter", "C_area",
+                     "C_mass", "Ash", "Lignin", "Solubles",
+                     "Decomp_leaf", "Hemi"),
+  root = c("NPP_root", "SS_root", "SRL", "RTD", "RDMC",
+           "NSC_root", "Decomp_root", "Starch_root",
+           "C_root", "N_root", "Lignin_root"),
+  stem = c("Latewood_diam", "Metaxylem_diam", "Earlywood_diam",
+           "NSC_stem", "Vessel_freq", "SS_stem", "Cond_stem",
+           "Starch_stem")
+)
+
+# Construct the Plant Trait Multilayer Network (PTMN)
+ptmn_edges <- PTMN(traits, layers_list = layers, method = "pearson")
+
+# Calculate network metrics for the PTMN
+PTMN_metrics(ptmn_edges)
+
+set.seed(42)
+# Create a visualization of the PTMN
+PTMN_plot(ptmn_edges, style = 1, vertex.size = 8,
+          vertex.label.cex = 0.5, edge.width = 2,
+          show.legend = FALSE)
+

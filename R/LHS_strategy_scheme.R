@@ -25,14 +25,14 @@ LHS_strategy_scheme <- function(){
   LHS_strategy_table <- data.frame(
     type=c( "L-L-L","L-L-S",  "L-S-L","L-S-S", "S-L-L","S-L-S","S-S-L", "S-S-S"),
     strategy=c(
-      "Rapid growth, strong survivability and competitiveness",
-      "Rapid growth, strong survivability and weak competitiveness",
-      "Rapid growth, long-distance dispersal and strong competitiveness",
-      "Rapid growth, long-distance dispersal and weak competitiveness",
-      "Slow growth, strong survivability and competitiveness",
-      "Slow growth, strong survivability and weak competitiveness",
-      "Slow growth, long-distance dispersal and strong competitiveness",
-      "Slow growth, long-distance dispersal and weak competitiveness")
+      "Rapid growth, strong competitiveness and strong survivability",
+      "Rapid growth, strong competitiveness and long-distance dispersal",
+      "Rapid growth, weak competitiveness and strong survivability",
+      "Rapid growth, weak competitiveness and long-distance dispersal",
+      "Slow growth, strong competitiveness and strong survivability",
+      "Slow growth, strong competitiveness and long-distance dispersal",
+      "Slow growth, weak competitiveness and strong survivability",
+      "Slow growth, weak competitiveness and long-distance dispersal")
   )
   return(LHS_strategy_table)
 }
