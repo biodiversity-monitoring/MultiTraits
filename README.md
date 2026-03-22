@@ -9,14 +9,14 @@ MultiTraits is a comprehensive R package designed for advanced analysis and visu
 ### From CRAN (recommended)
 
 ```{r,class.source = 'fold-show'}
-# install.packages("MultiTraits")
+install.packages("MultiTraits")
 ```
 
 ### From GitHub (development version)
 
 ```{r,class.source = 'fold-show'}
-# if (!requireNamespace("devtools", quietly = TRUE)) {install.packages("devtools")}
-# devtools::install_github("biodiversity-monitoring/MultiTraits")
+if (!requireNamespace("devtools", quietly = TRUE)) {install.packages("devtools")}
+devtools::install_github("biodiversity-monitoring/MultiTraits")
 ```
 
 ## Main Functions
