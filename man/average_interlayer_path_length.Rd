@@ -29,10 +29,10 @@ overall adaptability of the system.
 \details{
 The AIPL is calculated using the formula from multilayer network theory:
 
-\deqn{AIPL = \frac{1}{\sum_{α=1}^{M-1} \sum_{β=α+1}^{M} \sum_{i∈α}\sum_{j∈β}1_{d_{ij} < ∞}} \sum_{α=1}^{M-1} \sum_{β=α+1}^{M} \sum_{i∈α}\sum_{j∈β} d_{ij}}
+\deqn{AIPL = \frac{1}{\sum_{\alpha=1}^{M-1} \sum_{\beta=\alpha+1}^{M} \sum_{i \in \alpha}\sum_{j \in \beta} 1_{d_{ij} < \infty}} \sum_{\alpha=1}^{M-1} \sum_{\beta=\alpha+1}^{M} \sum_{i \in \alpha}\sum_{j \in \beta} d_{ij}}
 
-where \eqn{d_{ij}} is the shortest path length from node i (in layer α) to node j
-(in layer β) and \eqn{1_{d_{ij} < ∞}} is an indicator function of node reachability.
+where \eqn{d_{ij}} is the shortest path length from node \eqn{i} (in layer \eqn{\alpha}) to node \eqn{j}
+(in layer \eqn{\beta}) and \eqn{1_{d_{ij} < \infty}} is an indicator function of node reachability.
 
 The function:
 \enumerate{

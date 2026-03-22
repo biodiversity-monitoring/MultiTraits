@@ -30,10 +30,10 @@ Calculate Average Interlayer Clustering Coefficient
 
 The Average Interlayer Clustering Coefficient is calculated as:
 
-AICC = (1/n) * Σ(ICCᵢ)
+\deqn{AICC = \frac{1}{n} \sum_{i=1}^{n} ICC_i}
 
-where n is the total number of nodes and ICCᵢ denotes the interlayer clustering
-coefficient of node vᵢ. This parameter is particularly useful for
+where \eqn{n} is the total number of nodes and \eqn{ICC_i} denotes the interlayer clustering
+coefficient of node \eqn{v_i}. This parameter is particularly useful for
 understanding multidimensional plant adaptations and coordinated responses across
 different plant organs and functional systems.
 

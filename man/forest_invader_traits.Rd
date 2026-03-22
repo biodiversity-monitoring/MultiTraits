@@ -96,7 +96,8 @@ data(forest_invader_traits)
 head(forest_invader_traits)
 }
 \references{
-Fridley, J. D., Bauerle, T. L., Craddock, A., Ebert, A. R., Frank, D. A., Heberling, J. M., Hinman, E. D., Jo, I., Martinez, K. A., Smith, M. S., Woolhiser, L. J., & Yin, J. (2022). Fast but steady: An integrated leaf‐stem‐root trait syndrome for woody forest invaders. Ecology Letters, 25(4), 900-912.
-\url{ https://doi.org/10.1111/ele.13967 }
+Fridley, J. D., Bauerle, T. L., Craddock, A., Ebert, A. R., Frank, D. A., Heberling, J. M., Hinman, E. D., Jo, I., Martinez, K. A., Smith, M. S., Woolhiser, L. J., & Yin, J. (2022).
+Fast but steady: An integrated leaf‐stem‐root trait syndrome for woody forest invaders. Ecology Letters, 25(4), 900-912.
+\doi{10.1111/ele.13967}
 }
 \keyword{datasets}

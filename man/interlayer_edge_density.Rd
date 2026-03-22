@@ -27,7 +27,7 @@ interdependency among layers, reflecting stronger overall network integration.
 The interlayer edge density is calculated using the formula:
 \deqn{IED = \frac{\sum_{\alpha=1}^{M-1} \sum_{\beta=\alpha+1}^{M} L_{inter}^{\alpha,\beta}}{\sum_{\alpha=1}^{M-1} \sum_{\beta=\alpha+1}^{M} n_{\alpha} \cdot n_{\beta}}}
 where M is the total number of layers, \eqn{L_{inter}^{\alpha,\beta}} is the number of observed
-interlayer edges between layers α and β, and \eqn{n_{\alpha}} and \eqn{n_{\beta}} are their
+interlayer edges between layers \eqn{\alpha} and \eqn{\beta}, and \eqn{n_{\alpha}} and \eqn{n_{\beta}} are their
 respective node counts.
 
 This parameter is one of the specially designed topological parameters for quantifying PTMN
